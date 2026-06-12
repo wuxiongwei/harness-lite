@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+._*
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+
+# 临时文件
+*.tmp
+*.bak
+*.log
+
+# 内部测试数据（不入开源版）
+examples/internal-demo/
+test-output/
+
+# 用户自己的反馈（不入产品仓）
+backlog/private-*.md
+
+# 注：.claude 是符号链接到 templates/.claude（dogfooding）
+# 让 git 跟踪符号链接本身（以路径形式存储），不忽略
+# 这样 clone 后符号链接保留，dogfooding 配置同步

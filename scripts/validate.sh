@@ -36,10 +36,12 @@ for f in \
     ".claude/skills/harness-req/SKILL.md" \
     ".claude/skills/harness-design/SKILL.md" \
     ".claude/skills/harness-review/SKILL.md" \
+    ".claude/skills/harness-test-ci/SKILL.md" \
     ".claude/agents/doc-generator.md" \
     ".claude/agents/reviewer.md" \
     ".claude/agents/implementer.md" \
-    ".claude/agents/validator.md"; do
+    ".claude/agents/validator.md" \
+    ".claude/hooks/pre-commit-test.sh"; do
     log_check "$f" || errors=$((errors+1))
 done
 

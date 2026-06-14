@@ -261,10 +261,29 @@ install_templates() {
 
     # 复制 .claude/ 目录
     if [ -d "$TARGET_DIR/.claude" ]; then
-        # 已有 .claude，谨慎合并
-        log_info "已有 .claude/ 目录，合并新文件..."
-        cp -rn "$HARNESS_LITE_ROOT/templates/.claude/" "$TARGET_DIR/.claude.harness-lite-new/"
-        log_warn "新文件已放到 .claude.harness-lite-new/，请手动合并到 .claude/"
+        # 已有 .claude —— 智能合并：只注入 Harness-Lite 特有子目录，不动用户已有文件
+        log_info "已有 .claude/ 目录，智能合并 Harness-Lite 文件..."
+        mkdir -p "$TARGET_DIR/.claude/rules"
+        mkdir -p "$TARGET_DIR/.claude/skills"
+        mkdir -p "$TARGET_DIR/.claude/agents"
+        mkdir -p "$TARGET_DIR/.claude/hooks"
+        # rules 直接覆盖（Harness-Lite 管理的文件）
+        cp -r "$HARNESS_LITE_ROOT/templates/.claude/rules/." "$TARGET_DIR/.claude/rules/"
+        # skills 追加（不覆盖用户已有 skill）
+        cp -rn "$HARNESS_LITE_ROOT/templates/.claude/skills/." "$TARGET_DIR/.claude/skills/"
+        # agents 追加
+        cp -rn "$HARNESS_LITE_ROOT/templates/.claude/agents/." "$TARGET_DIR/.claude/agents/"
+        # hooks 追加
+        cp -rn "$HARNESS_LITE_ROOT/templates/.claude/hooks/." "$TARGET_DIR/.claude/hooks/"
+        # settings.json: 仅在没有时才创建（不覆盖用户已有配置）
+        if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
+            cp "$HARNESS_LITE_ROOT/templates/.claude/settings.json" "$TARGET_DIR/.claude/settings.json"
+            log_success ".claude/settings.json 已创建"
+        else
+            log_warn ".claude/settings.json 已存在，跳过（避免覆盖用户配置）"
+            log_info "  → 如需更新，参考 $HARNESS_LITE_ROOT/templates/.claude/settings.json"
+        fi
+        log_success ".claude/ 智能合并完成（已有文件保留）"
     else
         cp -r "$HARNESS_LITE_ROOT/templates/.claude" "$TARGET_DIR/.claude"
         log_success ".claude/ 目录已安装"

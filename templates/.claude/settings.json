@@ -39,16 +39,17 @@
   "hooks": {
     "PreToolUse": [
       {
+        "_comment": "全量测试门禁：git commit 前自动跑全量测试",
+        "matcher": {"tool": "Bash", "matchGlob": "git commit*"},
+        "action": "block_unless_pass",
+        "command": "bash .claude/hooks/pre-commit-test.sh",
+        "message": "🔴 全量测试失败，commit 被阻止。修复后重试，或设置 HARNESS_SKIP_TEST=1 临时跳过。"
+      },
+      {
         "_comment": "git push 拦截：等待用户明确确认",
         "matcher": {"tool": "Bash", "matchGlob": "git push*"},
         "action": "block",
-        "message": "⚠️ Harness-Lite门禁：禁止AI主动push。请用户review后手动执行 git push。如确实需要AI执行，请先取消此hook。"
-      },
-      {
-        "_comment": "git commit 提示（不阻断，仅提醒）",
-        "matcher": {"tool": "Bash", "matchGlob": "git commit*"},
-        "action": "allow",
-        "message": "💡 Harness-Lite提示：你正在commit。请确认：1)所有产物已更新 2)无敏感信息 3)commit message符合规范"
+        "message": "⚠️ Harness-Lite门禁：禁止AI主动push。请用户review后手动执行 git push。"
       },
       {
         "_comment": "敏感文件读取提示",

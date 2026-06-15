@@ -19,6 +19,18 @@
 
 ---
 
+## [1.0.4] - 2026-06-15
+
+### Added
+
+- **`init.sh` 项目信息自动提取**：新增 `extract_project_name` / `extract_tagline` / `extract_business_desc` 三个函数。从 `README.md` / `pyproject.toml` / `package.json` 按优先级抽取项目名、tagline、业务描述。已有项目装上去，用户大多数字段直接回车采纳即可，不再需要手敲
+
+### Fixed
+
+- **macOS bash 3.2 `read -p` 中文乱码**：提示词末尾紧跟「`$变量` + 中文括号」时，bash 3.2 的 readline 会在 UTF-8 边界吃掉部分字节，导致 `项目名（默认 ��:` 这类显示。改用 `printf` 提前打提示词、`read` 不带 `-p` 单独读输入
+
+---
+
 ## [1.0.3] - 2026-06-15
 
 ### Added

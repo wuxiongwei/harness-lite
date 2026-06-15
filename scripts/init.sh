@@ -149,6 +149,62 @@ detect_tech_stack() {
 }
 
 # ============================================================
+# Step 2.5: 项目元信息提取（README / pyproject / package.json）
+# ============================================================
+# 优先级：pyproject.toml > package.json > 目录名
+extract_project_name() {
+    if [ -f "pyproject.toml" ]; then
+        local n=$(grep -E "^name[[:space:]]*=" pyproject.toml | head -1 \
+                  | sed -E 's/^name[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+        [ -n "$n" ] && echo "$n" && return
+    fi
+    if [ -f "package.json" ]; then
+        local n=$(grep -E '"name"[[:space:]]*:' package.json | head -1 \
+                  | sed -E 's/.*"name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+        [ -n "$n" ] && echo "$n" && return
+    fi
+    basename "$TARGET_DIR"
+}
+
+# 优先级：README.md 第一段非空非标题行 > pyproject description > package.json description
+extract_tagline() {
+    if [ -f "README.md" ]; then
+        local t=$(awk '
+            /^[[:space:]]*$/ {next}
+            /^#/ {next}
+            {print; exit}
+        ' README.md)
+        [ -n "$t" ] && echo "$t" && return
+    fi
+    if [ -f "pyproject.toml" ]; then
+        local t=$(grep -E "^description[[:space:]]*=" pyproject.toml | head -1 \
+                  | sed -E 's/^description[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+        [ -n "$t" ] && echo "$t" && return
+    fi
+    if [ -f "package.json" ]; then
+        local t=$(grep -E '"description"[[:space:]]*:' package.json | head -1 \
+                  | sed -E 's/.*"description"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+        [ -n "$t" ] && echo "$t" && return
+    fi
+    echo ""
+}
+
+# 业务描述：README.md 第一个 # 标题之后到第一个 ## 之前的内容（前 300 字）
+extract_business_desc() {
+    if [ -f "README.md" ]; then
+        local d=$(awk '
+            /^# / {if (got_h1) exit; got_h1=1; next}
+            /^## / {exit}
+            got_h1 && NF {gsub(/^[[:space:]]+|[[:space:]]+$/,""); buf = buf $0 " "}
+            END {print buf}
+        ' README.md)
+        # 限 300 字（中文按字节数会偏短，可接受）
+        [ -n "$d" ] && echo "$(echo "$d" | head -c 300)" && return
+    fi
+    echo ""
+}
+
+# ============================================================
 # Step 3: 用户交互 - 团队规模
 # ============================================================
 interactive_tier() {
@@ -193,8 +249,10 @@ EOF
 interactive_project_info() {
     log_step "Step 4/6: 项目信息"
 
-    # 默认值：项目名取当前目录 basename，团队规模根据 TIER 选
-    local default_project_name=$(basename "$TARGET_DIR")
+    # 自动提取项目元信息
+    local default_project_name=$(extract_project_name)
+    local default_tagline=$(extract_tagline)
+    local default_business_desc=$(extract_business_desc)
     local default_team_size
     case "$TIER" in
         lite)     default_team_size="1-3人" ;;
@@ -202,20 +260,57 @@ interactive_project_info() {
         *)        default_team_size="4-10人" ;;
     esac
 
+    # 给用户看自动提取的预览（如果提到了东西）
     echo ""
-    read -p "项目名（默认 $default_project_name）: " PROJECT_NAME
+    if [ -n "$default_tagline" ] || [ -n "$default_business_desc" ]; then
+        log_info "自动从 README/pyproject/package.json 提取项目信息："
+        log_info "  项目名：$default_project_name"
+        [ -n "$default_tagline" ] && log_info "  定位：  $default_tagline"
+        if [ -n "$default_business_desc" ]; then
+            local preview=$(echo "$default_business_desc" | head -c 100)
+            log_info "  描述：  ${preview}..."
+        fi
+        echo ""
+        log_info "下面所有提示直接回车 = 采用自动提取值；输入新值会覆盖"
+        echo ""
+    fi
+
+    # 注意：read -p 在 macOS bash 3.2 下，提示词末尾紧跟「变量+中文括号」会乱码
+    # 解决：用 printf 提前打提示词，read 不带 -p
+    printf "项目名 [%s]: " "$default_project_name"
+    read PROJECT_NAME
     PROJECT_NAME=${PROJECT_NAME:-"$default_project_name"}
 
-    read -p "一句话定位（如：电商平台后端服务，默认 $PROJECT_NAME）: " PROJECT_TAGLINE
-    PROJECT_TAGLINE=${PROJECT_TAGLINE:-"$PROJECT_NAME"}
+    if [ -n "$default_tagline" ]; then
+        printf "一句话定位 [%s]: " "$default_tagline"
+        read PROJECT_TAGLINE
+        PROJECT_TAGLINE=${PROJECT_TAGLINE:-"$default_tagline"}
+    else
+        printf "一句话定位（如：电商平台后端服务）[默认 %s]: " "$PROJECT_NAME"
+        read PROJECT_TAGLINE
+        PROJECT_TAGLINE=${PROJECT_TAGLINE:-"$PROJECT_NAME"}
+    fi
 
-    read -p "业务描述（详细一些，默认 待补充）: " BUSINESS_DESC
-    BUSINESS_DESC=${BUSINESS_DESC:-"待补充"}
+    if [ -n "$default_business_desc" ]; then
+        echo ""
+        log_info "业务描述自动提取："
+        echo "  $default_business_desc"
+        echo ""
+        printf "业务描述（回车采用上面提取值，或输入新内容覆盖）: "
+        read BUSINESS_DESC
+        BUSINESS_DESC=${BUSINESS_DESC:-"$default_business_desc"}
+    else
+        printf "业务描述（详细一些）[默认 待补充]: "
+        read BUSINESS_DESC
+        BUSINESS_DESC=${BUSINESS_DESC:-"待补充"}
+    fi
 
-    read -p "团队规模（默认 $default_team_size）: " TEAM_SIZE
+    printf "团队规模 [%s]: " "$default_team_size"
+    read TEAM_SIZE
     TEAM_SIZE=${TEAM_SIZE:-"$default_team_size"}
 
-    read -p "项目阶段（new/maintaining/refactoring，默认 maintaining）: " PROJECT_STAGE
+    printf "项目阶段 (new/maintaining/refactoring) [maintaining]: "
+    read PROJECT_STAGE
     PROJECT_STAGE=${PROJECT_STAGE:-"maintaining"}
 
     echo ""
@@ -224,13 +319,17 @@ interactive_project_info() {
     log_info "  前端：$TECH_STACK_FRONTEND"
     log_info "  数据库：$DATABASE"
 
-    read -p "是否需要修改技术栈？(y/N): " modify_tech
+    printf "是否需要修改技术栈？(y/N): "
+    read modify_tech
     if [ "$modify_tech" = "y" ]; then
-        read -p "后端技术栈: " input_be
+        printf "后端技术栈: "
+        read input_be
         [ -n "$input_be" ] && TECH_STACK_BACKEND="$input_be"
-        read -p "前端技术栈: " input_fe
+        printf "前端技术栈: "
+        read input_fe
         [ -n "$input_fe" ] && TECH_STACK_FRONTEND="$input_fe"
-        read -p "数据库: " input_db
+        printf "数据库: "
+        read input_db
         [ -n "$input_db" ] && DATABASE="$input_db"
     fi
 }

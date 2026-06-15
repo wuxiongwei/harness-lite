@@ -158,9 +158,9 @@ interactive_tier() {
 
   📦 选择档位：
 
-  1) Lite     - 单兵/小团队 (1-3人)   [v1.3 计划支持，当前不可用]
-  2) Standard - 中等团队 (4-10人)     [✅ MVP 当前支持]
-  3) Pro      - 大团队 (11-30人)      [v1.1 计划支持，当前不可用]
+  1) Lite     - 单兵/小团队 (1-3人)   [✅ 当前支持]
+  2) Standard - 中等团队 (4-10人)     [✅ 当前支持]
+  3) Pro      - 大团队 (11-30人)      [v1.1 计划支持，当前安装为 Standard 档]
 
 EOF
 
@@ -169,8 +169,8 @@ EOF
 
     case $tier_choice in
         1)
-            log_warn "Lite档位 v1.3 才支持，当前安装为 Standard 档"
-            TIER="standard"
+            TIER="lite"
+            log_success "已选择：Lite 档（1-3人）"
             ;;
         2)
             TIER="standard"
@@ -193,18 +193,27 @@ EOF
 interactive_project_info() {
     log_step "Step 4/6: 项目信息"
 
-    echo ""
-    read -p "项目名（如 my-awesome-app）: " PROJECT_NAME
-    PROJECT_NAME=${PROJECT_NAME:-"我的项目"}
+    # 默认值：项目名取当前目录 basename，团队规模根据 TIER 选
+    local default_project_name=$(basename "$TARGET_DIR")
+    local default_team_size
+    case "$TIER" in
+        lite)     default_team_size="1-3人" ;;
+        standard) default_team_size="4-10人" ;;
+        *)        default_team_size="4-10人" ;;
+    esac
 
-    read -p "一句话定位（如：电商平台后端服务）: " PROJECT_TAGLINE
+    echo ""
+    read -p "项目名（默认 $default_project_name）: " PROJECT_NAME
+    PROJECT_NAME=${PROJECT_NAME:-"$default_project_name"}
+
+    read -p "一句话定位（如：电商平台后端服务，默认 $PROJECT_NAME）: " PROJECT_TAGLINE
     PROJECT_TAGLINE=${PROJECT_TAGLINE:-"$PROJECT_NAME"}
 
-    read -p "业务描述（详细一些）: " BUSINESS_DESC
+    read -p "业务描述（详细一些，默认 待补充）: " BUSINESS_DESC
     BUSINESS_DESC=${BUSINESS_DESC:-"待补充"}
 
-    read -p "团队规模（如 5人，3前端2后端）: " TEAM_SIZE
-    TEAM_SIZE=${TEAM_SIZE:-"4-10人"}
+    read -p "团队规模（默认 $default_team_size）: " TEAM_SIZE
+    TEAM_SIZE=${TEAM_SIZE:-"$default_team_size"}
 
     read -p "项目阶段（new/maintaining/refactoring，默认 maintaining）: " PROJECT_STAGE
     PROJECT_STAGE=${PROJECT_STAGE:-"maintaining"}

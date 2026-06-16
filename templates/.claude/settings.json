@@ -1,69 +1,67 @@
 {
-  "_comment": "Harness-Lite settings.json - 团队共享配置（入版本库）",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "Harness-Lite settings.json · 团队共享配置（入版本库）",
   "_documentation": "https://github.com/zoe/harness-lite/blob/main/docs/03-customization/03-hooks.md",
   "_version": "{{HARNESS_LITE_VERSION}}",
 
   "permissions": {
-    "alwaysAllow": [
-      {"tool": "Read"},
-      {"tool": "Glob"},
-      {"tool": "Grep"},
-      {"tool": "Bash", "matchGlob": "git status*"},
-      {"tool": "Bash", "matchGlob": "git diff*"},
-      {"tool": "Bash", "matchGlob": "git log*"},
-      {"tool": "Bash", "matchGlob": "ls *"},
-      {"tool": "Bash", "matchGlob": "pwd"},
-      {"tool": "Bash", "matchGlob": "find * -name *"}
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(find * -name *)"
     ],
-    "alwaysDeny": [
-      {"tool": "Bash", "matchGlob": "rm -rf *"},
-      {"tool": "Bash", "matchGlob": "rm -fr *"},
-      {"tool": "Bash", "matchGlob": "git push --force*"},
-      {"tool": "Bash", "matchGlob": "git push -f *"},
-      {"tool": "Bash", "matchGlob": "git reset --hard*"},
-      {"tool": "Bash", "matchGlob": "git clean -f*"},
-      {"tool": "Edit", "matchGlob": "**/.env"},
-      {"tool": "Edit", "matchGlob": "**/.env.*"},
-      {"tool": "Edit", "matchGlob": "**/credentials.*"},
-      {"tool": "Edit", "matchGlob": "**/secrets.*"},
-      {"tool": "Edit", "matchGlob": "**/*.key"},
-      {"tool": "Edit", "matchGlob": "**/id_rsa*"},
-      {"tool": "Edit", "matchGlob": "**/serviceAccountKey.json"},
-      {"tool": "Write", "matchGlob": "**/.env"},
-      {"tool": "Write", "matchGlob": "**/.env.*"},
-      {"tool": "Write", "matchGlob": "**/credentials.*"},
-      {"tool": "Write", "matchGlob": "**/secrets.*"}
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -fr *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f *)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/credentials.*)",
+      "Edit(**/secrets.*)",
+      "Edit(**/*.key)",
+      "Edit(**/id_rsa*)",
+      "Edit(**/serviceAccountKey.json)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/credentials.*)",
+      "Write(**/secrets.*)"
     ]
   },
 
   "hooks": {
     "PreToolUse": [
       {
-        "_comment": "全量测试门禁：git commit 前自动跑全量测试",
-        "matcher": {"tool": "Bash", "matchGlob": "git commit*"},
-        "action": "block_unless_pass",
-        "command": "bash .claude/hooks/pre-commit-test.sh",
-        "message": "🔴 全量测试失败，commit 被阻止。修复后重试，或设置 HARNESS_SKIP_TEST=1 临时跳过。"
-      },
-      {
-        "_comment": "git push 拦截：等待用户明确确认",
-        "matcher": {"tool": "Bash", "matchGlob": "git push*"},
-        "action": "block",
-        "message": "⚠️ Harness-Lite门禁：禁止AI主动push。请用户review后手动执行 git push。"
-      },
-      {
-        "_comment": "敏感文件读取提示",
-        "matcher": {"tool": "Read", "matchGlob": "**/.env*"},
-        "action": "allow",
-        "message": "⚠️ 你正在读取.env文件，注意不要在响应中泄露密钥值。"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-commit-test.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push*)",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-push.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "_comment": "需求收尾时提示蒸馏知识",
-        "matcher": {"tool": "Write", "matchGlob": "docs/versions/active/**/04-*.md"},
-        "action": "notify",
-        "message": "📚 Harness-Lite提示：本需求即将收尾。是否有值得沉淀的知识？\n  - 踩坑 → team-knowledge/wiki/pitfalls/\n  - 决策 → team-knowledge/wiki/decisions/"
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(docs/versions/active/**/04-*.md)",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/distill-prompt.sh"
+          }
+        ]
       }
     ]
   },

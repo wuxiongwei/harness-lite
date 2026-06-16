@@ -177,5 +177,7 @@ else
     log_err "全量测试失败，commit 已阻止"
     log_info "修复后重新 commit，或设置 HARNESS_SKIP_TEST=1 临时跳过（仅限紧急）"
     echo ""
-    exit 1
+    # exit 2 = Claude Code PreToolUse 阻塞约定（stderr 反馈给 AI）
+    echo "🔴 全量测试失败，commit 被阻止。修复后重试，或 HARNESS_SKIP_TEST=1 临时跳过。" >&2
+    exit 2
 fi

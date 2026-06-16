@@ -19,6 +19,23 @@
 
 ---
 
+## [1.0.5] - 2026-06-16
+
+### Fixed (P0 · stock_make_money 现场暴露)
+
+- **`settings.json` schema 不兼容 Claude Code**：旧 schema 使用 `alwaysAllow`/`alwaysDeny` + `matcher: object` + `action: block_unless_pass`，导致 `claude` 启动时报 "Settings Error · hooks: Expected array, but received undefined"。改用 Claude Code 当前 schema：
+  - `permissions.allow` / `permissions.deny`：字符串数组，格式 `"Bash(git status:*)"` / `"Edit(**/.env)"`
+  - `hooks.{Pre,Post}ToolUse`：每项含 `matcher`（工具名字符串如 `"Bash"`）+ `hooks` 数组（含 `type`/`command`，按需加 `if`）
+  - 用脚本 `exit 2` 阻塞工具调用（不再用 `action` 字段）
+
+### Changed
+
+- **`pre-commit-test.sh` 退出码**：失败时 `exit 1` 改为 `exit 2`（Claude Code PreToolUse 阻塞约定），并向 stderr 输出阻塞原因
+- **新增 `block-push.sh`**：原本嵌入 `settings.json` 的"禁止 AI push"逻辑独立成 hook 脚本（exit 2 阻塞）
+- **新增 `distill-prompt.sh`**：原本嵌入 settings.json 的"04-*.md 写完提示蒸馏知识"逻辑独立成 hook 脚本
+
+---
+
 ## [1.0.4] - 2026-06-15
 
 ### Added

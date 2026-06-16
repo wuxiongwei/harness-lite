@@ -19,6 +19,45 @@
 
 ---
 
+## [1.0.13] - 2026-06-16
+
+### Fixed (P2 · AI 自身行为漂移)
+
+- **8 处口头承诺过的 backlog 项从未真正写入文件**：v1.0.7/8/11/12 复盘里我说过 8 次"已加入 backlog"，但 `proposals.md` 自 v1.0.0 立项以来零更新、`bugs.md` P0/P1/P2 全空。这是**我作为 AI 自己的行为漂移**——和 5 次同根 schema 漂移结构完全相同（"说了要做 vs 真实没做"）。
+
+### Added (履行欠款)
+
+`backlog/proposals.md` 加入 9 条「🟡 待评估」：
+1. **Adding-anything checklist**（防 schema 漂移开发协议）
+2. **Dogfooding 协议升级**（强制版——发版前真 claude REPL 触发 + 对接外部 schema 必先 fetch docs）
+3. **Defense layer addition checklist**（防过度设计）
+4. **manifest.json 跟踪安装文件**（v1.1+ 大投入项目）
+5. **Skill 自动触发命中率统计**
+6. **路径 B 硬规则放宽**（≤3 代码文件 + 任意文档）
+7. **Stock_make_money 实战观察清单**（首个真实项目反馈通道）
+8. **bash 多字节边界守则**
+9. **upgrade.sh 自动 diff CHANGELOG 提示**
+10. **装-卸自动化循环测试脚本**
+11. **文档其余 4 份**（路径选择 / skill 参考 / 工作流 / 速查表，等 stock 实战驱动）
+
+`backlog/bugs.md` 录入 3 条：
+- **P1 · Stock_make_money "运行运行就停了"**（用户原话，待诊断）
+- **P1 · pre-commit-test.sh 在 unknown 技术栈静默通过**（用户感知不到 noop）
+- **P2 · bash 多字节边界 bug 持续复现**
+
+### 元发现
+
+**M1 · "AI 说了要做的事实际没做" 是 5 次同根 schema 漂移的结构同构版**：
+| 维度 | schema 漂移 | backlog 欠款 |
+|------|-----------|------------|
+| 表象 | 写代码时凭印象、单点改 | 写复盘时口头承诺、不落地 |
+| 根因 | 没建立"加新东西必同步"的回路 | 没建立"说了必写"的回路 |
+| 解药 | validate.sh 自检（5 维网） | 提交 commit 前 grep 复盘里"已加入 backlog"是否真在 backlog/ 里 |
+
+**M2 · 复盘里写的"加入 backlog" ≠ backlog 真有这条**——文字承诺没绑定到文件操作。已加入 backlog 自身（套娃）"提交脚本 / 复盘脚本检查口头承诺是否落地"。
+
+---
+
 ## [1.0.12] - 2026-06-16
 
 ### Fixed (P1 · v1.0.7 同根第 5 次 schema 漂移)

@@ -76,9 +76,9 @@ log_success "已移除 harness-* skills"
 [ -f ".claude/agents/validator.md" ] && rm ".claude/agents/validator.md"
 log_success "已移除 4 个 subagent"
 
-# Harness-Lite 提供的 hooks 脚本（v1.0.5+ 引入）
+# Harness-Lite 提供的 hooks 脚本（v1.0.5+ 引入；v1.0.12 删除 block-push.sh）
 [ -f ".claude/hooks/pre-commit-test.sh" ] && rm ".claude/hooks/pre-commit-test.sh"
-[ -f ".claude/hooks/block-push.sh" ] && rm ".claude/hooks/block-push.sh"
+[ -f ".claude/hooks/block-push.sh" ] && rm ".claude/hooks/block-push.sh"  # v1.0.11 及之前的残留
 [ -f ".claude/hooks/distill-prompt.sh" ] && rm ".claude/hooks/distill-prompt.sh"
 log_success "已移除 hook 脚本"
 

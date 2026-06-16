@@ -153,8 +153,23 @@ elif command -v jq &>/dev/null; then
         schema_ok=false
     fi
 
+    # 不变式 6：hook 内 if 字段不能用 "Bash(xxx*)"（紧贴 *），官方语法是 "Bash(xxx *)"（带空格）
+    # 详见 https://code.claude.com/docs/en/hooks—— v1.0.12 修复同根第 5 次 schema 漂移
+    # regex 思路：找括号内最后字符是 [a-zA-Z]\* 紧贴的，即缺空格 → 报错
+    bad_if=$(jq -r '
+        [.hooks.PreToolUse, .hooks.PostToolUse] | flatten | map(.hooks[]?.if // empty)
+        | map(select(test("\\([^)]*[a-zA-Z]\\*\\)")))
+        | .[]
+    ' ".claude/settings.json" 2>/dev/null)
+    if [ -n "$bad_if" ]; then
+        echo -e "${RED}✗${NC}  hook 'if' 字段格式错误（命令与 * 之间缺空格）："
+        echo "$bad_if" | sed 's/^/      /'
+        echo -e "    ${YELLOW}修法：${NC}'Bash(git commit*)' → 'Bash(git commit *)'（命令与 * 之间必须有空格）"
+        schema_ok=false
+    fi
+
     if $schema_ok; then
-        echo -e "${GREEN}✓${NC}  settings.json schema 通过（5 条不变式）"
+        echo -e "${GREEN}✓${NC}  settings.json schema 通过（6 条不变式）"
     else
         errors=$((errors+1))
         echo -e "    ${YELLOW}修复：${NC}重装或参考 templates/.claude/settings.json"

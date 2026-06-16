@@ -41,13 +41,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit*)",
+            "if": "Bash(git commit *)",
             "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-commit-test.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(git push*)",
-            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-push.sh"
           }
         ]
       }

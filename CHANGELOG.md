@@ -19,6 +19,36 @@
 
 ---
 
+## [1.0.12] - 2026-06-16
+
+### Fixed (P1 · v1.0.7 同根第 5 次 schema 漂移)
+
+- **`settings.json` 中 hook `if` 字段格式错误**：`"Bash(git commit*)"` / `"Bash(git push*)"` 中 `*` 紧贴命令名末尾，是 v1.0.5 修 settings 时凭印象写法。Claude Code 官方语法是 `"Bash(git commit *)"`（命令与 `*` 之间必须有空格，见 https://code.claude.com/docs/en/hooks）。
+  - 影响：hook **可能不触发**（取决于 Claude Code 解析时是按宽松还是严格匹配）
+  - 没在真 claude REPL 实测过——和 v1.0.7 dogfooding 盲区同根
+
+### Removed (过度设计)
+
+- **`block-push.sh`**：删除。理由：
+  - `principles.md` 已规定"AI 不主动 commit/push"
+  - `permissions.deny` 已拦危险 push（`git push --force *` 等）
+  - hook 拦截无法区分"AI 主动"vs"用户让 AI 帮 push"，会扰民
+  - 三层防护中这一层是冗余 + 噪音
+- **`settings.json` PreToolUse 第 2 个 hook 段**（block-push 调用）一并删除
+- **`uninstall.sh`** 保留 `block-push.sh` 删除逻辑，标注"v1.0.11 及之前的残留"——升级用户需要清理
+
+### Added (validate.sh 第 6 条不变式)
+
+- **hook `if` 字段格式校验**：jq regex 检测 `Bash(xxx*)` 缺空格写法，精确报告并给出修法。任何未来添加新 hook 时凭印象写错格式，下一次 validate.sh 立即抓到。
+
+### Verified
+
+- stock_make_money 端 settings.json 同步：`if` 改空格、删 block-push.sh、`_version` → 1.0.12
+- 反向测试：注入坏 `if` 格式，validate.sh 精确报告
+- 装-卸循环：删 block-push 后 uninstall 仍干净（保留兼容删除老安装的逻辑）
+
+---
+
 ## [1.0.11] - 2026-06-16
 
 ### Fixed (P2 · v1.0.5 同根第 4 次)

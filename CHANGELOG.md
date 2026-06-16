@@ -19,6 +19,32 @@
 
 ---
 
+## [1.0.9] - 2026-06-16
+
+### Added (路径 A · 完整需求)
+
+- **`scripts/upgrade.sh`**：让已装项目能从旧版本升级到最新版（之前缺失通道）
+  - 6 阶段：前置检查 → 版本对比 → 备份 → 覆盖 H-L 文件 → CLAUDE.md 头部 → validate.sh 兜底
+  - 覆盖范围：`.claude/{rules,skills,agents,hooks,templates,settings.json}`
+  - 不动用户数据：`team-knowledge/` / `docs/versions/` / `CLAUDE.md` 业务部分 / `tech-knowledge-rules.md`（init 时已渲染的实例）
+  - 自动备份：`.harness-lite-upgrade-backup/{timestamp}/`
+  - CLAUDE.md 头部版本号 sed 替换（不重写整个文件）
+  - 已最新版 → 退出 0；未装 → 退出 1
+- **`README.md`**：upgrade 章节从"v1.1 计划"改为"现已支持"
+
+### Verified
+
+- /tmp 模拟测试 10 项全绿（含异常路径）
+- stock_make_money 实战：真实从 v1.0.4 升到 v1.0.9，validate.sh 全绿，用户数据保留
+
+### Not done (明确不做，留 v1.1+)
+
+- manifest.json 跟踪安装文件 → 选择性合并用户改动
+- 跨主版本升级（1.x → 2.x）
+- 保留用户自定义的 hook / skill / settings.json 改动（当前简单覆盖，靠 backup 找回）
+
+---
+
 ## [1.0.8] - 2026-06-16
 
 ### Fixed (P2 · uninstall 残留)

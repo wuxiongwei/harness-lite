@@ -116,7 +116,8 @@ harness-lite/
 ├── scripts/                    # 自动化脚本
 │   ├── init.sh                 # 智能初始化
 │   ├── validate.sh             # 自检
-│   └── upgrade.sh              # 升级
+│   ├── uninstall.sh            # 卸载
+│   └── upgrade.sh              # 升级（v1.0.9+ 可用）
 ├── examples/                   # 示例项目
 ├── backlog/                    # 反馈与提议
 ├── VERSION

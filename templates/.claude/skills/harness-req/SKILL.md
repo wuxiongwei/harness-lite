@@ -1,15 +1,12 @@
 ---
 name: harness-req
 description: |
-  Harness-Lite 主入口 skill，自动判定路径(A完整需求/B小需求/C Bug修复)，
-  生成第一阶段产物。当用户输入需求描述时触发，按场景分流到对应路径。
-trigger:
-  keywords: ["新需求", "改个", "加一个", "修复bug", "改文案", "调配置", "新增功能", "TDD"]
-  patterns: ["/harness:req", "/req"]
-version: 1.0.0
+  Harness-Lite 主入口。当用户描述新需求 / 改文案 / 修 bug 时调用，
+  自动判定路径（A 完整需求 / B 小需求 / C Bug 修复），生成第一阶段产物。
+  典型触发：用户说"新需求"、"改个 X"、"加一个 X"、"修复 bug"、"改文案"、"调配置"、"新增功能"、"TDD"。
 ---
 
-# /harness:req · 主入口 skill
+# /harness-req · 主入口 skill
 
 > **路径分级 + 第一阶段产物生成**
 > 这是 Harness-Lite 的统一入口，所有需求都从这里开始
@@ -71,7 +68,7 @@ version: 1.0.0
    - "AC是否覆盖主流程+异常?"
    - "不做的范围是否明确?"
 6. 等待"人介入1：方案确认"
-7. ✅ 通过后 → 进入 /harness:design
+7. ✅ 通过后 → 进入 /harness-design
 ```
 
 ### 路径 B 执行（小需求 2 阶段）
@@ -86,7 +83,7 @@ version: 1.0.0
 3. 复制模板：cp .claude/templates/path-b/01-小需求.md ./
 4. 直接填充（不需要subagent）
 5. 反向校验追问
-6. ✅ 通过后 → 进入 /harness:design 或直接编码
+6. ✅ 通过后 → 进入 /harness-design 或直接编码
 ```
 
 ### 路径 C 执行（Bug 修复 4 阶段）
@@ -198,7 +195,7 @@ Task(
 ### 示例1：完整需求
 
 ```
-用户：/harness:req 新增用户中心，支持手机号注册、登录、找回密码
+用户：/harness-req 新增用户中心，支持手机号注册、登录、找回密码
 
 skill 判定：
   - 含"新增" → 路径A候选
@@ -215,7 +212,7 @@ skill 行动：
 ### 示例2：小需求
 
 ```
-用户：/harness:req 把订单超时时间从30分钟改成1小时
+用户：/harness-req 把订单超时时间从30分钟改成1小时
 
 skill 判定：
   - 含"改" + 配置 → 路径B候选
@@ -232,7 +229,7 @@ skill 行动：
 ### 示例3：Bug修复
 
 ```
-用户：/harness:req 用户提现接口返回500，复现：金额输入小数点后3位
+用户：/harness-req 用户提现接口返回500，复现：金额输入小数点后3位
 
 skill 判定：
   - 含"500" + "复现" → 路径C
@@ -250,17 +247,17 @@ skill 行动：
 ## 与其他 skill 的协作
 
 ```
-/harness:req → 完成01产物
+/harness-req → 完成01产物
    ↓
-/harness:design → 完成02产物（路径A/C走）
+/harness-design → 完成02产物（路径A/C走）
    ↓
 [implementer subagent] → 编码 + 03产物
    ↓
-/harness:review → 一致性审计
+/harness-review → 一致性审计
    ↓
 [validator subagent] → 完成04产物
 ```
 
 ---
 
-*Harness-Lite v1.0.0-alpha · /harness:req · 主入口*
+*Harness-Lite v1.0.0-alpha · /harness-req · 主入口*

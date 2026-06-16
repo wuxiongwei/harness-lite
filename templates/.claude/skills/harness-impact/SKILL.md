@@ -1,17 +1,12 @@
 ---
 name: harness-impact
 description: |
-  影响面分析 skill。基于 git diff 找出改动文件，
-  通过 grep/import 分析扫描哪些模块依赖它们，
-  输出直接/间接影响清单 + 测试覆盖情况，
-  帮助 AI 和开发者知道"改了 A 会不会影响 B"。
-trigger:
-  keywords: ["影响面", "影响分析", "改动影响", "会不会影响"]
-  patterns: ["/harness:impact", "/impact"]
-version: 1.0.0
+  影响面分析。基于 git diff 找出改动文件，扫描哪些模块依赖它们（import/require），
+  输出直接/间接依赖清单 + 测试覆盖情况，回答"改了 A 会不会影响 B"。
+  典型触发：用户问"影响面"、"会不会影响"、"改动影响什么"，或编码完成准备 commit 前。
 ---
 
-# /harness:impact · 影响面分析 skill
+# /harness-impact · 影响面分析 skill
 
 > **回答"改了什么、影响了谁"** · 辅助全量回归决策
 
@@ -38,10 +33,10 @@ AI 改了 user_service.py
 
 ```
 1. 编码完成后（implementer 完成）：
-   /harness:impact → 了解影响面 → /harness:test-ci（有重点跑）
+   /harness-impact → 了解影响面 → /harness-test-ci（有重点跑）
 
 2. 设计阶段（02-设计.md 的 §8 影响面分析）：
-   /harness:impact --staged  ← 提前分析，指导设计
+   /harness-impact --staged  ← 提前分析，指导设计
 ```
 
 ---
@@ -179,14 +174,14 @@ done
 
 ---
 
-## Phase 5：与 /harness:test-ci 协作
+## Phase 5：与 /harness-test-ci 协作
 
-影响面分析的输出，可以给 `/harness:test-ci` 提供"重点关注清单"：
+影响面分析的输出，可以给 `/harness-test-ci` 提供"重点关注清单"：
 
 ```
-/harness:impact → 识别高风险文件
+/harness-impact → 识别高风险文件
     ↓
-/harness:test-ci --focus=test_user_api.py,test_user_admin.py
+/harness-test-ci --focus=test_user_api.py,test_user_admin.py
     ↓
 全量跑完后，重点展示这几个文件的结果
 ```
@@ -196,7 +191,7 @@ done
 ## 使用示例
 
 ```
-用户：/harness:impact
+用户：/harness-impact
 
 skill 行动：
   Phase 1：git diff HEAD → 发现 2 个改动文件
@@ -212,7 +207,7 @@ skill 行动：
     
   🎯 建议重点关注：test_user_api.py, test_user_admin.py
   
-  → 运行 /harness:test-ci 开始全量验证
+  → 运行 /harness-test-ci 开始全量验证
 ```
 
 ---
@@ -228,10 +223,10 @@ skill 行动：
 
 ## 与 03-代码索引.md 的关系
 
-`/harness:impact` 的输出可以直接填入 `03-代码索引.md §5 影响面`：
+`/harness-impact` 的输出可以直接填入 `03-代码索引.md §5 影响面`：
 
 ```markdown
-## 5. 影响面（来自 /harness:impact）
+## 5. 影响面（来自 /harness-impact）
 （粘贴影响面报告的摘要）
 ```
 
@@ -239,4 +234,4 @@ skill 行动：
 
 ---
 
-*Harness-Lite v1.0.0 · /harness:impact · 影响面分析*
+*Harness-Lite v1.0.0 · /harness-impact · 影响面分析*

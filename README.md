@@ -80,7 +80,7 @@ $ claude
 ```
 新需求来了
     ↓
-[/harness:req 自动判定]
+[/harness-req 自动判定]
     ↓
 ┌────┼────┐
 ↓    ↓    ↓

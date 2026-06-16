@@ -19,6 +19,38 @@
 
 ---
 
+## [1.0.7] - 2026-06-16
+
+### Fixed (P1 · v1.0.5 同根 bug 全面爆发)
+
+- **5 个 skill frontmatter 用了不存在的字段**：`trigger.keywords` / `trigger.patterns` / `version` 都是凭印象写的，Claude Code 不认。改为：
+  - 删 `trigger` / `version`
+  - 把"何时触发"语义全部融入 `description`（这才是 Claude 自动选用 skill 的依据）
+  - 受影响：harness-req / harness-design / harness-impact / harness-review / harness-test-ci
+- **4 个 agent frontmatter 用了自造字段**：`visible:` / `invisible:` 不在官方支持的字段列表里。改为：
+  - 删 `visible` / `invisible`
+  - 加 `tools:` 字段（官方支持，限制工具调用范围）
+  - "可见范围"语义下放到 system prompt body（LLM 读到会主动遵循）
+  - 受影响：doc-generator / implementer / reviewer / validator
+- **57 处 skill 调用名错误**：`/harness:req` → `/harness-req`（冒号是 plugin 命名空间专用，项目级 skill 调用名 = 目录名）
+  - 替换范围：`templates/.claude/skills/*` (49 处) + `templates/CLAUDE.md` / `scripts/init.sh` / `README.md` / `CLAUDE.md` (8 处)
+  - 历史版本目录 `docs/versions/active/v1.0.{1,2,3,5,6}-*/` 保持不动（历史档不动）
+
+### Added (横向预防)
+
+- **`validate.sh` skill / agent schema 校验**：v1.0.6 settings 防回归网扩展到 skill / agent：
+  - skill 不含废弃字段 `trigger:` / `version:`
+  - agent 不含废弃字段 `visible:` / `invisible:`
+  - skill 必须含 `description:`（触发关键）
+  - 全文档不残留旧调用名 `/harness:`
+- **dogfooding 元发现回流**：识别出"dogfooding 期间从未在 claude REPL 敲过 skill 命令"是漏 bug 的根因，已写入 backlog（下版本起，dogfooding 协议必须包含敲一次命令）
+
+### Changed
+
+- **stock_make_money 现场同步**：`.claude/skills/` + `.claude/agents/` 全量覆盖，`CLAUDE.md` 修 5 处旧调用名
+
+---
+
 ## [1.0.6] - 2026-06-16
 
 ### Added (v1.0.5 元发现回流)

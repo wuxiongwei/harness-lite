@@ -89,7 +89,6 @@ if [ ! -f ".claude/settings.json" ]; then
     errors=$((errors+1))
 elif command -v jq &>/dev/null; then
     schema_ok=true
-
     # 不变式 1-2：permissions.allow / deny 是数组
     if ! jq -e '.permissions.allow | type == "array"' ".claude/settings.json" &>/dev/null; then
         echo -e "${RED}✗${NC}  permissions.allow 不是数组（应是字符串数组）"
@@ -151,6 +150,73 @@ else
         echo -e "${RED}✗${NC}  settings.json JSON 语法错误"
         errors=$((errors+1))
     fi
+fi
+
+# ============================================================
+# skill / agent frontmatter schema 校验（防 v1.0.7 类回归）
+# ============================================================
+echo ""
+echo "📋 skill / agent frontmatter 校验："
+
+skill_agent_ok=true
+
+# 临时关闭 set -e —— 这一段大量用 grep -l/-L，未匹配时返回非零是正常的
+set +e
+
+# 检查 skill 不含废弃字段 trigger / version
+if ls .claude/skills/*/SKILL.md &>/dev/null; then
+    bad_trigger=$(grep -lE "^trigger:" .claude/skills/*/SKILL.md 2>/dev/null)
+    bad_version=$(grep -lE "^version:" .claude/skills/*/SKILL.md 2>/dev/null)
+    if [ -n "$bad_trigger" ]; then
+        echo -e "${RED}✗${NC}  skill 包含废弃字段 'trigger:'（v1.0.7 起改用 description 触发）："
+        echo "$bad_trigger" | sed 's/^/      /'
+        skill_agent_ok=false
+    fi
+    if [ -n "$bad_version" ]; then
+        echo -e "${RED}✗${NC}  skill 包含废弃字段 'version:'（v1.0.7 起删除）："
+        echo "$bad_version" | sed 's/^/      /'
+        skill_agent_ok=false
+    fi
+fi
+
+# 检查 agent 不含废弃字段 visible / invisible
+if ls .claude/agents/*.md &>/dev/null; then
+    bad_visible=$(grep -lE "^visible:|^invisible:" .claude/agents/*.md 2>/dev/null)
+    if [ -n "$bad_visible" ]; then
+        echo -e "${RED}✗${NC}  agent 包含废弃字段 'visible:'/'invisible:'（v1.0.7 起改用 tools 字段 + system prompt 描述可见性）："
+        echo "$bad_visible" | sed 's/^/      /'
+        skill_agent_ok=false
+    fi
+fi
+
+# 检查 skill 是否有 description（触发的关键）
+if ls .claude/skills/*/SKILL.md &>/dev/null; then
+    no_desc=$(grep -L "^description:" .claude/skills/*/SKILL.md 2>/dev/null)
+    if [ -n "$no_desc" ]; then
+        echo -e "${RED}✗${NC}  skill 缺少 'description:' 字段（Claude 通过 description 决定何时触发）："
+        echo "$no_desc" | sed 's/^/      /'
+        skill_agent_ok=false
+    fi
+fi
+
+# 检查文档是否还残留旧调用名 /harness:
+if ls .claude/skills/*/SKILL.md &>/dev/null || [ -f "CLAUDE.md" ]; then
+    bad_invoke=$(grep -lE "/harness:" .claude/skills/*/SKILL.md .claude/agents/*.md CLAUDE.md 2>/dev/null)
+    if [ -n "$bad_invoke" ]; then
+        echo -e "${RED}✗${NC}  发现旧调用名 '/harness:'（v1.0.7 起改为 '/harness-'，目录名即调用名）："
+        echo "$bad_invoke" | sed 's/^/      /'
+        skill_agent_ok=false
+    fi
+fi
+
+# 恢复 set -e
+set -e
+
+if $skill_agent_ok; then
+    echo -e "${GREEN}✓${NC}  skill / agent frontmatter 通过"
+else
+    errors=$((errors+1))
+    echo -e "    ${YELLOW}修复：${NC}重装或参考 templates/.claude/{skills,agents}/"
 fi
 
 

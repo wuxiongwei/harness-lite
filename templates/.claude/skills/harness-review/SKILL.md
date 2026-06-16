@@ -1,15 +1,12 @@
 ---
 name: harness-review
 description: |
-  一致性审计 skill：检查产物链路（01-需求 → 02-设计 → 03-代码 → 04-测试）
-  的5维度一致性。发现"翻译失真"或"代码越界"。在编码完成后调用。
-trigger:
-  keywords: ["一致性审计", "review一致性", "翻译失真", "代码越界"]
-  patterns: ["/harness:review", "/review"]
-version: 1.0.0
+  一致性审计。检查产物链路（01-需求 → 02-设计 → 03-代码 → 04-测试）的 5 维度一致性，
+  发现"翻译失真"或"代码越界"。在编码完成、测试通过后调用。
+  典型触发：用户说"一致性审计"、"review 一致性"、"翻译失真"、"代码越界"，或准备收尾 / commit 前。
 ---
 
-# /harness:review · 一致性审计 skill
+# /harness-review · 一致性审计 skill
 
 > **核心质量机制**：通过多视角校验暴露翻译失真
 
@@ -31,7 +28,7 @@ version: 1.0.0
 
 - 编码完成（03-代码索引.md 状态 = 🟢）
 - 测试完成（04-测试.md 状态 = 🟢）
-- 用户主动调用 `/harness:review`
+- 用户主动调用 `/harness-review`
 
 ---
 
@@ -249,7 +246,7 @@ Task(
 # 一致性审计报告 v{VERSION}-{SLUG}
 
 > 审计时间：{TIMESTAMP}
-> 审计 skill：/harness:review
+> 审计 skill：/harness-review
 > 5路并行审计：✅完成
 
 ## 1. 总体结论
@@ -273,7 +270,7 @@ Task(
 ## 使用示例
 
 ```
-用户：/harness:review
+用户：/harness-review
 
 skill 行动：
   Phase 1：并行Read 5份产物
@@ -303,4 +300,4 @@ skill 行动：
 
 ---
 
-*Harness-Lite v1.0.0-alpha · /harness:review · 一致性审计*
+*Harness-Lite v1.0.0-alpha · /harness-review · 一致性审计*

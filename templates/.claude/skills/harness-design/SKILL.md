@@ -1,15 +1,12 @@
 ---
 name: harness-design
 description: |
-  设计阶段 skill：基于01-需求生成02-设计文档。包含技术方案、关键决策、
-  影响面分析。委托 doc-generator 起草，reviewer 独立评审。仅路径A使用。
-trigger:
-  keywords: ["设计方案", "技术方案", "架构设计"]
-  patterns: ["/harness:design", "/design"]
-version: 1.0.0
+  设计阶段 skill。基于 01-需求.md 生成 02-设计.md（技术方案/关键决策/影响面），
+  委托 doc-generator 起草、reviewer 独立评审。仅路径 A 使用。
+  典型触发：用户说"设计方案"、"技术方案"、"架构设计"，或刚做完 /harness-req 进入第二阶段。
 ---
 
-# /harness:design · 设计阶段 skill
+# /harness-design · 设计阶段 skill
 
 > **路径A · 阶段2/4**：把需求翻译为技术方案
 
@@ -18,7 +15,7 @@ version: 1.0.0
 ## 触发条件
 
 - 路径A的01-需求.md 已通过（人介入1：方案确认）
-- 用户主动调用：`/harness:design`
+- 用户主动调用：`/harness-design`
 
 ---
 
@@ -171,7 +168,7 @@ Task(
 
 ### 01-需求 不存在
 ```
-报错："请先完成 /harness:req 阶段"
+报错："请先完成 /harness-req 阶段"
 ```
 
 ### 01-需求 未通过（状态不是 🟢）
@@ -182,7 +179,7 @@ Task(
 ### 设计反复修订（>3轮）
 ```
 报错："设计反复修订超过3轮，可能需求理解有问题"
-建议：回到 /harness:req 重新审视01-需求
+建议：回到 /harness-req 重新审视01-需求
 ```
 
 ---
@@ -190,7 +187,7 @@ Task(
 ## 使用示例
 
 ```
-用户：/harness:design
+用户：/harness-design
 
 skill 行动：
   1. 加载 01-需求.md
@@ -203,4 +200,4 @@ skill 行动：
 
 ---
 
-*Harness-Lite v1.0.0-alpha · /harness:design · 路径A 阶段2*
+*Harness-Lite v1.0.0-alpha · /harness-design · 路径A 阶段2*

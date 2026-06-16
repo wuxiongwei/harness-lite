@@ -35,7 +35,7 @@
 ```
 新需求来了
     ↓
-[/harness:req 自动判定路径]
+[/harness-req 自动判定路径]
     ↓
 ┌────┼────┐
 ↓    ↓    ↓
@@ -86,9 +86,9 @@ A    B    C
 
 | 命令 | 作用 | 路径 |
 |-----|-----|-----|
-| `/harness:req` | 入口（含路径自动判定） | A/B/C |
-| `/harness:design` | 设计 | A |
-| `/harness:review` | 一致性审计 | A/C |
+| `/harness-req` | 入口（含路径自动判定） | A/B/C |
+| `/harness-design` | 设计 | A |
+| `/harness-review` | 一致性审计 | A/C |
 
 详见：[skill手册](.claude/skills/)
 
@@ -142,7 +142,7 @@ A    B    C
 ### 5.1 新需求处理
 
 ```
-1. 接到需求 → /harness:req（自动判定路径）
+1. 接到需求 → /harness-req（自动判定路径）
 2. 确认路径 → 创建版本目录 docs/versions/active/v{X.Y}-{slug}/
 3. 走完产物链路（A/B/C路径）
 4. 反向校验（每个阶段结束）

@@ -246,7 +246,7 @@ v1.3 (MINOR)
 ### 10.1 我的工作笔记
 
 - dogfooding 启动日：2026-06-12
-- 第一次用 /harness:req 修自己产品的 bug：v1.0.1-fix-init-bugs
+- 第一次用 /harness-req 修自己产品的 bug：v1.0.1-fix-init-bugs
 
 ### 10.2 临时规则
 

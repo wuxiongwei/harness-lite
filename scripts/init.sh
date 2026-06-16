@@ -574,7 +574,7 @@ print_next_steps() {
     log_info "     > 介绍一下我们项目"
     echo ""
     echo "  4. 试跑第一个需求"
-    log_info "     > /harness:req 我要做一个测试需求"
+    log_info "     > /harness-req 我要做一个测试需求"
     echo ""
     echo "  🆘 遇到问题："
     log_info "     卸载：$HARNESS_LITE_ROOT/scripts/uninstall.sh"

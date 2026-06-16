@@ -1,16 +1,12 @@
 ---
 name: harness-test-ci
 description: |
-  全量回归 + CI 质量门禁 skill。每次 AI 改完代码后调用，
-  自动检测测试框架并全量运行，输出分层测试报告，
-  给出 PASS / BLOCKED 门控信号。
-trigger:
-  keywords: ["全量测试", "跑测试", "ci", "回归测试", "测试通过了吗"]
-  patterns: ["/harness:test-ci", "/test-ci"]
-version: 1.0.0
+  全量回归 + CI 质量门禁。每次 AI 改完代码后调用，自动检测测试框架（Python/Java/Node.js/Go），
+  全量运行测试，输出分层测试报告，给出 PASS / BLOCKED 门控信号。
+  典型触发：用户说"全量测试"、"跑测试"、"回归测试"、"测试通过了吗"，或编码完成进入验收前。
 ---
 
-# /harness:test-ci · 全量回归 CI skill
+# /harness-test-ci · 全量回归 CI skill
 
 > **每次 AI 改完代码后必须调用** · 保证整个项目没有被破坏
 
@@ -39,9 +35,9 @@ UserService 被 OrderService / PayService / EmailService 调用
 ```
 编码（implementer subagent）完成
     ↓
-/harness:test-ci    ← 此时调用
+/harness-test-ci    ← 此时调用
     ↓
-全量通过 → /harness:review（一致性审计）
+全量通过 → /harness-review（一致性审计）
     ↓
 全量失败 → 🔴 BLOCKED，返回 implementer 修复
 ```
@@ -225,7 +221,7 @@ BLOCKED 时：
 
 ## 渐进策略支持（对老项目）
 
-老项目很多文件没有测试。`/harness:test-ci` 支持两种模式：
+老项目很多文件没有测试。`/harness-test-ci` 支持两种模式：
 
 ### 模式1：全量模式（默认）
 - 跑所有已有测试
@@ -239,7 +235,7 @@ BLOCKED 时：
 - 适合：老项目正在逐步建立测试体系
 
 ```
-/harness:test-ci --progressive
+/harness-test-ci --progressive
 ```
 
 ---
@@ -249,7 +245,7 @@ BLOCKED 时：
 ### 正常 CI 调用
 
 ```
-用户：/harness:test-ci
+用户：/harness-test-ci
 
 skill 行动：
   Phase 1：检测到 Python + pytest
@@ -263,7 +259,7 @@ skill 行动：
   ✅ 单元测试：47/47 通过
   ✅ 影响面：3 个文件，100% 有测试
   
-  🟢 PASS · 可进入 /harness:review
+  🟢 PASS · 可进入 /harness-review
 ```
 
 ### 测试失败场景
@@ -281,7 +277,7 @@ Phase 3：pytest tests/ -x -q → 第 12 个测试失败
   
   🔴 BLOCKED
   → 返回修复 order_service.py 的 cancel_order 状态转换
-  → 修复后重新运行 /harness:test-ci
+  → 修复后重新运行 /harness-test-ci
 ```
 
 ---
@@ -291,13 +287,13 @@ Phase 3：pytest tests/ -x -q → 第 12 个测试失败
 在 `docs/versions/active/{slug}/` 的完整路径A工作流中：
 
 ```
-01-需求 → 02-设计 → [implementer 编码] → /harness:test-ci → /harness:review → 04-测试
+01-需求 → 02-设计 → [implementer 编码] → /harness-test-ci → /harness-review → 04-测试
                                               ↑
                                          此处调用
 ```
 
-`/harness:test-ci` 的报告会被写入 `test-ci-report.md`，`04-测试.md` 直接引用。
+`/harness-test-ci` 的报告会被写入 `test-ci-report.md`，`04-测试.md` 直接引用。
 
 ---
 
-*Harness-Lite v1.0.0 · /harness:test-ci · 全量回归CI*
+*Harness-Lite v1.0.0 · /harness-test-ci · 全量回归CI*

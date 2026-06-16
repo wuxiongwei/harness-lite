@@ -19,6 +19,25 @@
 
 ---
 
+## [1.0.8] - 2026-06-16
+
+### Fixed (P2 · uninstall 残留)
+
+- **`uninstall.sh` 自 v1.0.2 后未回归**：v1.0.2 加 hooks、v1.0.5 加 block-push.sh / distill-prompt.sh、v1.0.7 加 harness-impact / harness-test-ci，但 uninstall.sh 一直停留在"3 skills + 4 agents + 0 hooks"的旧版认知。残留 5 类：
+  - `.claude/skills/harness-impact/`（v1.0.2 起残留）
+  - `.claude/skills/harness-test-ci/`（v1.0.2 起残留）
+  - `.claude/hooks/pre-commit-test.sh`（v1.0.2 起残留）
+  - `.claude/hooks/block-push.sh`（v1.0.5 起残留）
+  - `.claude/hooks/distill-prompt.sh`（v1.0.5 起残留）
+- **修复**：补全卸载清单（5 skills + 4 agents + 3 hooks + 3 templates + 3 rules + settings.json），并 `rmdir .claude/hooks/` 清理空目录
+- **预告显示**：用户 confirm 提示文案从"3 个 skill"改为"5 个 skill"+ 新增"3 个 hook 脚本"行
+
+### Verified
+
+- 实测 install → uninstall 干净循环：26 个文件装上、26 个全清，`.claude/` 父目录也回收，CLAUDE.md / docs / team-knowledge 等用户数据按设计保留
+
+---
+
 ## [1.0.7] - 2026-06-16
 
 ### Fixed (P1 · v1.0.5 同根 bug 全面爆发)

@@ -27,8 +27,9 @@ log_warn "卸载将移除以下内容："
 echo "  - .claude/rules/principles.md (Harness-Lite 提供的)"
 echo "  - .claude/rules/tech-stack-rules.md"
 echo "  - .claude/rules/domain-rules.md"
-echo "  - .claude/skills/harness-* (3个 skill)"
-echo "  - .claude/agents/*.md (4个 subagent)"
+echo "  - .claude/skills/harness-* (5 个 skill)"
+echo "  - .claude/agents/*.md (4 个 subagent)"
+echo "  - .claude/hooks/*.sh (3 个 Harness-Lite hook 脚本)"
 echo "  - .claude/templates/path-* (产物模板)"
 echo "  - .claude/settings.json (Harness-Lite 版)"
 echo ""
@@ -65,6 +66,8 @@ log_info "移除 Harness-Lite 文件..."
 [ -d ".claude/skills/harness-req" ] && rm -rf ".claude/skills/harness-req"
 [ -d ".claude/skills/harness-design" ] && rm -rf ".claude/skills/harness-design"
 [ -d ".claude/skills/harness-review" ] && rm -rf ".claude/skills/harness-review"
+[ -d ".claude/skills/harness-impact" ] && rm -rf ".claude/skills/harness-impact"
+[ -d ".claude/skills/harness-test-ci" ] && rm -rf ".claude/skills/harness-test-ci"
 log_success "已移除 harness-* skills"
 
 [ -f ".claude/agents/doc-generator.md" ] && rm ".claude/agents/doc-generator.md"
@@ -72,6 +75,12 @@ log_success "已移除 harness-* skills"
 [ -f ".claude/agents/implementer.md" ] && rm ".claude/agents/implementer.md"
 [ -f ".claude/agents/validator.md" ] && rm ".claude/agents/validator.md"
 log_success "已移除 4 个 subagent"
+
+# Harness-Lite 提供的 hooks 脚本（v1.0.5+ 引入）
+[ -f ".claude/hooks/pre-commit-test.sh" ] && rm ".claude/hooks/pre-commit-test.sh"
+[ -f ".claude/hooks/block-push.sh" ] && rm ".claude/hooks/block-push.sh"
+[ -f ".claude/hooks/distill-prompt.sh" ] && rm ".claude/hooks/distill-prompt.sh"
+log_success "已移除 hook 脚本"
 
 [ -d ".claude/templates/path-a" ] && rm -rf ".claude/templates/path-a"
 [ -d ".claude/templates/path-b" ] && rm -rf ".claude/templates/path-b"
@@ -95,6 +104,7 @@ log_info "  3. 备份在 $BACKUP_DIR/CLAUDE.md"
 rmdir ".claude/skills" 2>/dev/null || true
 rmdir ".claude/agents" 2>/dev/null || true
 rmdir ".claude/rules" 2>/dev/null || true
+rmdir ".claude/hooks" 2>/dev/null || true
 rmdir ".claude/templates" 2>/dev/null || true
 # Bug #2 修复：清理空的 .claude/ 父目录（如果用户没有其他文件在里面）
 rmdir ".claude" 2>/dev/null && log_success "已清理空的 .claude/ 目录" || log_info ".claude/ 仍含其他文件，保留"

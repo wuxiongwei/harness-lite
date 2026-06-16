@@ -56,7 +56,7 @@ $ claude
 > 介绍一下我们项目
 ```
 
-详见：[5分钟安装指南](docs/01-installation/01-quickstart-5min.md)
+详见：[5 分钟快速上手](docs/01-getting-started/01-quickstart.md)
 
 ---
 
@@ -131,13 +131,18 @@ harness-lite/
 
 | 我想... | 看哪份文档 |
 |--------|-----------|
-| 知道这是什么 | [产品愿景](docs/00-product-spec/01-vision.md) |
-| 知道值不值得用 | [价值主张](docs/00-product-spec/02-value-proposition.md) |
-| 5分钟装起来 | [快速安装](docs/01-installation/01-quickstart-5min.md) |
-| 知道每天怎么用 | [工作流总览](docs/02-daily-usage/01-workflow-overview.md) |
-| 速查命令 | [速查表](docs/02-daily-usage/02-cheatsheet.md) |
-| 选择路径 | [路径选择指南](docs/02-daily-usage/03-path-selection.md) |
-| 升级版本 | [升级指南](docs/07-evolution/02-upgrade-guide.md) |
+| 知道这是什么 | [产品愿景](docs/00-product-spec/01-vision.md) ✅ |
+| 知道值不值得用 | [价值主张](docs/00-product-spec/02-value-proposition.md) ✅ |
+| 知道适不适合我 | [目标用户](docs/00-product-spec/03-target-users.md) ✅ |
+| 知道做什么不做什么 | [产品边界](docs/00-product-spec/04-scope-boundary.md) ✅ |
+| 5 分钟装起来 + 第一次用 | [快速上手](docs/01-getting-started/01-quickstart.md) ✅ |
+| 路径 A/B/C 怎么选 | 📝 待补（v1.1） |
+| 5 个 skill 详细用法 | 📝 待补（v1.1） · 暂时直接读 `.claude/skills/*/SKILL.md` |
+| 升级 / 卸载 | 直接跑 `scripts/upgrade.sh` 或 `scripts/uninstall.sh` |
+| 看历史变更 | [CHANGELOG.md](CHANGELOG.md) ✅ |
+
+> 📝 待补：路径选择手册 / skill 参考 / 工作流总览 / 速查表 / 升级指南。
+> 写作策略：等 stock_make_money 等真实项目实战暴露具体痛点后再写，避免凭想象产出无效文档。
 
 ---
 
@@ -179,7 +184,7 @@ v1.3 (远期) — Solo Edition (个人版)
 v2.0 (远期) — 重大重构（如需）
 ```
 
-详见：[版本规划](docs/07-evolution/01-versioning.md)
+详见：[CHANGELOG.md](CHANGELOG.md)（按 SemVer 规范，已发布版本细节）
 
 ---
 

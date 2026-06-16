@@ -19,6 +19,33 @@
 
 ---
 
+## [1.0.10] - 2026-06-16
+
+### Added (路径 B · 用户文档第一份)
+
+- **`docs/01-getting-started/01-quickstart.md`**：5 分钟从零到第一次用 skill 的完整路径（276 行）
+  - 6 步流程：装 → 启 claude 自检 → 介绍项目 → 第一次 skill → 看产物 → 实施 + commit
+  - 5 条 FAQ：覆盖 v1.0.5 / 1.0.7 / 1.0.8 真实 bug 的排错路径
+  - 末尾标"📝 待补"诚实暴露未写的 4 份文档
+
+### Changed
+
+- **`README.md`**：
+  - §快速开始死链：`docs/01-installation/01-quickstart-5min.md` → `docs/01-getting-started/01-quickstart.md`
+  - §文档导航重写：5 处死链清零，已写文档标 ✅，待补标 📝，并写明写作策略（等真实项目暴露痛点再写）
+  - §版本规划末尾死链：指向不存在的 `docs/07-evolution/01-versioning.md` → 改指 CHANGELOG.md
+
+### Verified
+
+- README 所有 docs/ 链接 5/5 全绿（之前 6 处死链清零）
+- quickstart 文档结构、命令可读性、FAQ 覆盖度自查通过
+
+### Not done (明确不做)
+
+- 路径选择手册 / skill 详细参考 / 工作流总览 / 速查表 / 升级指南 → 等 stock_make_money 等真实项目实战暴露具体痛点后再写（避免凭想象产出无效文档）
+
+---
+
 ## [1.0.9] - 2026-06-16
 
 ### Added (路径 A · 完整需求)

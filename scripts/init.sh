@@ -433,6 +433,7 @@ render_template_vars() {
     if [ -f "$target" ]; then
         local tech_stack_str="$TECH_STACK_BACKEND / $TECH_STACK_FRONTEND / $DATABASE"
         local project_type_str="$TECH_STACK_BACKEND + $TECH_STACK_FRONTEND"
+        local docs_url="https://github.com/zoe/harness-lite/blob/main/README.md"
         sed -i.bak \
             -e "s#{{PROJECT_NAME}}#$PROJECT_NAME#g" \
             -e "s#{{PROJECT_TAGLINE}}#$PROJECT_TAGLINE#g" \
@@ -442,6 +443,7 @@ render_template_vars() {
             -e "s#{{TEAM_SIZE}}#$TEAM_SIZE#g" \
             -e "s#{{PROJECT_STAGE}}#$PROJECT_STAGE#g" \
             -e "s#{{HARNESS_LITE_VERSION}}#$HARNESS_LITE_VERSION#g" \
+            -e "s#{{HARNESS_LITE_DOCS_URL}}#$docs_url#g" \
             -e "s#{{INSTALL_DATE}}#$install_date#g" \
             -e "s#{{LAST_UPDATE}}#$install_date#g" \
             -e "s#{{PROJECT_VERSION}}#0.1.0#g" \

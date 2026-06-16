@@ -139,6 +139,18 @@ for rule_file in "$HARNESS_LITE_ROOT/templates/.claude/rules"/*.md; do
         cp -f "$rule_file" ".claude/rules/$fname"
     fi
 done
+
+# 覆盖完 rules 后，渲染新文件中的版本占位符（v1.0.11 修：之前漏了导致 domain-rules.md 残留 {{...}}）
+local upgrade_date=$(date +"%Y-%m-%d")
+for rendered in ".claude/rules/principles.md" ".claude/rules/domain-rules.md"; do
+    if [ -f "$rendered" ]; then
+        sed -i.bak \
+            -e "s#{{HARNESS_LITE_VERSION}}#$NEW_VERSION#g" \
+            -e "s#{{INSTALL_DATE}}#$upgrade_date#g" \
+            "$rendered"
+        rm -f "$rendered.bak"
+    fi
+done
 log_success "rules/ 已更新（tech-stack-rules.md 保留用户渲染版）"
 
 # skills：覆盖（注意：用户加的非 harness-* skill 保留）

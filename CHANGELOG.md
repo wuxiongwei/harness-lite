@@ -19,6 +19,31 @@
 
 ---
 
+## [1.0.11] - 2026-06-16
+
+### Fixed (P2 · v1.0.5 同根第 4 次)
+
+- **`templates/CLAUDE.md` 第 305 行的 `{{HARNESS_LITE_DOCS_URL}}` 占位符**：init.sh 渲染列表里没这个变量，导致**所有装过 Harness-Lite 的项目** CLAUDE.md 都残留 `{{HARNESS_LITE_DOCS_URL}}` 字面量
+- **`upgrade.sh` 覆盖 rules 后没渲染**：升级路径下 `domain-rules.md` 被模板版覆盖后未渲染版本占位符，残留 `{{HARNESS_LITE_VERSION}}` / `{{INSTALL_DATE}}`
+- **`validate.sh` 占位符检查范围太窄**：原本只检查 tech-stack-rules.md 一个文件，改为全量扫描 CLAUDE.md + rules/*.md，并精确报告"哪个文件 → 哪个占位符"
+
+### Added (validate.sh 第 4 维防回归)
+
+| 维度 | 引入版本 |
+|------|---------|
+| 文件存在性 | v1.0.0 |
+| settings.json schema | v1.0.6 |
+| skill/agent schema | v1.0.7 |
+| **模板占位符** | **v1.0.11** |
+
+未来添加任何新 `{{...}}` 模板变量忘了同步 init.sh 渲染规则，下一次跑 validate.sh 立即抓到。
+
+### Changed
+
+- **stock_make_money 现场同步**：`CLAUDE.md` 渲染 `{{HARNESS_LITE_DOCS_URL}}`、`domain-rules.md` 渲染 2 个版本变量
+
+---
+
 ## [1.0.10] - 2026-06-16
 
 ### Added (路径 B · 用户文档第一份)

@@ -78,6 +78,24 @@ if [ -f ".claude/rules/tech-stack-rules.md" ]; then
     fi
 fi
 
+# 全量扫 CLAUDE.md / rules 中残留的占位符（防 v1.0.11 类回归）
+set +e
+unrendered=$(grep -lE "\{\{[A-Z_]+\}\}" \
+    CLAUDE.md \
+    .claude/rules/*.md \
+    2>/dev/null)
+set -e
+if [ -n "$unrendered" ]; then
+    echo -e "${RED}✗${NC}  以下文件含未渲染的 {{...}} 占位符："
+    echo "$unrendered" | while read f; do
+        ph=$(grep -oE "\{\{[A-Z_]+\}\}" "$f" 2>/dev/null | sort -u | tr '\n' ' ')
+        echo "      $f → $ph"
+    done
+    errors=$((errors+1))
+else
+    echo -e "${GREEN}✓${NC}  CLAUDE.md / rules 占位符已全部渲染"
+fi
+
 # ============================================================
 # settings.json schema 校验（防 v1.0.5 类回归）
 # ============================================================

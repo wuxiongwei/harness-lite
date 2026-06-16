@@ -78,6 +78,82 @@ if [ -f ".claude/rules/tech-stack-rules.md" ]; then
     fi
 fi
 
+# ============================================================
+# settings.json schema 校验（防 v1.0.5 类回归）
+# ============================================================
+echo ""
+echo "📋 settings.json schema 校验："
+
+if [ ! -f ".claude/settings.json" ]; then
+    echo -e "${RED}✗${NC}  .claude/settings.json 不存在"
+    errors=$((errors+1))
+elif command -v jq &>/dev/null; then
+    schema_ok=true
+
+    # 不变式 1-2：permissions.allow / deny 是数组
+    if ! jq -e '.permissions.allow | type == "array"' ".claude/settings.json" &>/dev/null; then
+        echo -e "${RED}✗${NC}  permissions.allow 不是数组（应是字符串数组）"
+        schema_ok=false
+    fi
+    if ! jq -e '.permissions.deny | type == "array"' ".claude/settings.json" &>/dev/null; then
+        echo -e "${RED}✗${NC}  permissions.deny 不是数组（应是字符串数组）"
+        schema_ok=false
+    fi
+
+    # 不变式 3：没有遗留旧字段 alwaysAllow / alwaysDeny
+    if jq -e '.permissions | has("alwaysAllow") or has("alwaysDeny")' ".claude/settings.json" 2>/dev/null | grep -q true; then
+        echo -e "${RED}✗${NC}  发现遗留字段 alwaysAllow/alwaysDeny（v1.0.5 起改为 allow/deny）"
+        schema_ok=false
+    fi
+
+    # 不变式 4：hook matcher 是字符串
+    if jq -e '.hooks.PreToolUse // [] | all(.matcher | type == "string")' ".claude/settings.json" &>/dev/null; then
+        :
+    else
+        echo -e "${RED}✗${NC}  hooks.PreToolUse[].matcher 不是字符串（应是 \"Bash\"/\"Edit\" 等工具名）"
+        schema_ok=false
+    fi
+
+    # 不变式 5：hook entry 含 hooks 数组
+    if jq -e '.hooks.PreToolUse // [] | all(.hooks | type == "array")' ".claude/settings.json" &>/dev/null; then
+        :
+    else
+        echo -e "${RED}✗${NC}  hooks.PreToolUse[].hooks 不是数组（应是 [{type, command}]）"
+        schema_ok=false
+    fi
+
+    # 不变式 4-5 同样校验 PostToolUse
+    if jq -e '.hooks.PostToolUse // [] | all(.matcher | type == "string")' ".claude/settings.json" &>/dev/null; then
+        :
+    else
+        echo -e "${RED}✗${NC}  hooks.PostToolUse[].matcher 不是字符串"
+        schema_ok=false
+    fi
+    if jq -e '.hooks.PostToolUse // [] | all(.hooks | type == "array")' ".claude/settings.json" &>/dev/null; then
+        :
+    else
+        echo -e "${RED}✗${NC}  hooks.PostToolUse[].hooks 不是数组"
+        schema_ok=false
+    fi
+
+    if $schema_ok; then
+        echo -e "${GREEN}✓${NC}  settings.json schema 通过（5 条不变式）"
+    else
+        errors=$((errors+1))
+        echo -e "    ${YELLOW}修复：${NC}重装或参考 templates/.claude/settings.json"
+    fi
+else
+    # 降级路径：jq 不存在，只做 JSON 语法校验
+    if python3 -m json.tool ".claude/settings.json" &>/dev/null; then
+        echo -e "${YELLOW}⚠${NC}  jq 未安装，仅校验了 JSON 语法（schema 校验需要 jq）"
+        echo -e "    ${YELLOW}建议：${NC}brew install jq （macOS）或 apt install jq （Linux）"
+    else
+        echo -e "${RED}✗${NC}  settings.json JSON 语法错误"
+        errors=$((errors+1))
+    fi
+fi
+
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $errors -eq 0 ]; then

@@ -19,6 +19,25 @@
 
 ---
 
+## [1.0.6] - 2026-06-16
+
+### Added (v1.0.5 元发现回流)
+
+- **`validate.sh` schema 校验**：新增 settings.json schema 5 条不变式校验（jq 实现），可主动捕获 v1.0.5 类 schema 漂移：
+  1. `permissions.allow` 是数组
+  2. `permissions.deny` 是数组
+  3. 没有遗留字段 `alwaysAllow`/`alwaysDeny`
+  4. hook entry 的 `matcher` 是字符串
+  5. hook entry 的 `hooks` 是数组
+- **降级路径**：jq 未安装时降级为 `python json.tool` 仅校验语法，并提示 `brew install jq`
+- **`init.sh` 安装完成提示重排**：把"启动 claude 自检"提到 #1（明确说"看到红色 Settings Error 立即报告"），防止 schema 错误被静默跳过
+
+### Changed
+
+- **测试覆盖**：手测在干净安装、坏 schema（恢复 v1.0.4 旧格式）两种场景下，validate.sh 输出符合预期
+
+---
+
 ## [1.0.5] - 2026-06-16
 
 ### Fixed (P0 · stock_make_money 现场暴露)

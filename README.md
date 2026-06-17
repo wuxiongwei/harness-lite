@@ -2,7 +2,7 @@
 
 > **小团队的AI协作工程化框架** · 让2-5人小团队也能享受工程化红利
 
-[![Version](https://img.shields.io/badge/version-1.0.0--alpha-blue)]() [![Status](https://img.shields.io/badge/status-internal--use-orange)]() [![License](https://img.shields.io/badge/license-Internal-red)]()
+[![Version](https://img.shields.io/badge/version-1.0.20-blue)]() [![License](https://img.shields.io/badge/license-MIT-green)]() [![Status](https://img.shields.io/badge/status-open--source-brightgreen)]()
 
 ---
 
@@ -190,9 +190,9 @@ v2.0 (远期) — 重大重构（如需）
 
 ## 💬 反馈
 
-当前为**内部使用版本**。反馈渠道：
+欢迎通过以下方式参与：
 
-- 🐛 Bug报告：写入 [backlog/bugs.md](backlog/bugs.md)
+- 🐛 Bug报告：[GitHub Issues](https://github.com/wuxiongwei/harness-lite/issues)
 - 💡 新能力提议：写入 [backlog/proposals.md](backlog/proposals.md)
 - 📝 使用反馈：写入 [backlog/feedback.md](backlog/feedback.md)
 
@@ -200,7 +200,7 @@ v2.0 (远期) — 重大重构（如需）
 
 ## 📜 许可
 
-详见 [LICENSE](LICENSE)。当前为内部使用版本，未来可能调整为开源/双许可证。
+[MIT License](LICENSE)  © 2026 wuxiongwei
 
 ---
 

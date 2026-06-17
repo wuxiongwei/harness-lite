@@ -8,6 +8,12 @@
 *.swp
 *~
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
 # 临时文件
 *.tmp
 *.bak

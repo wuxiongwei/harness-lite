@@ -56,7 +56,7 @@ description: |
 
 ## Phase 2：路径执行
 
-### 路径 A 执行（完整需求 4 阶段）
+### 路径 A 执行（完整需求 5 阶段）
 
 ```
 1. 创建版本目录：docs/versions/active/v{X.Y}-{slug}/

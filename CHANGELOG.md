@@ -19,6 +19,48 @@
 
 ---
 
+## [1.0.19] - 2026-06-17
+
+### Fixed (P2 · v1.0.17 加 path-a 第 5 阶段后忘记同步的"4 阶段"过时表述)
+
+v1.0.17 加 `path-a/05-完成.md` 让 path-a 从 4 阶段变为 5 阶段，但**整个仓库其他地方的"4 阶段"引用没同步**。本次审计发现并修复 13 处：
+
+- `templates/.claude/skills/harness-design/SKILL.md`：`阶段2/4` → `阶段2/5`
+- `templates/.claude/skills/harness-req/SKILL.md`：`完整需求 4 阶段` → `5 阶段`
+- `templates/templates/path-a/01-需求.md`：`阶段1/4` → `阶段1/5`（标题 + 末尾）
+- `templates/templates/path-a/02-设计.md`：`阶段2/4` → `阶段2/5`（标题 + 末尾）
+- `templates/templates/path-a/03-代码索引.md`：`阶段3/4` → `阶段3/5`（标题 + 末尾）
+- `templates/templates/path-a/04-测试.md`：`阶段4/4` → `阶段4/5`（标题 + 末尾）
+- `templates/templates/path-b/01-小需求.md`：`重新走4阶段` → `重新走5阶段`
+- `templates/CLAUDE.md`：3 处（`工作流（4阶段...）` / 流程图 / `5阶段产物链路`）
+- `CLAUDE.md`（仓根 dogfooding 版）：3 处
+- stock_make_money 现场同步（CLAUDE.md + skills + path-a/b 模板）
+
+### Verified
+
+- stock validate.sh 跑一次全绿
+- path-a 现在 5 处标题 + 5 处末尾全部 `X/5` 格式
+- path-c 保持 `X/4`（4 阶段不变）
+- path-b 保持 2 阶段（不变）
+
+### 元发现
+
+**M1 · 同根第 7 次（v1.0.17 → v1.0.19 之间漏的同步链）**：
+- v1.0.17 加 05-完成.md → 心智模型只想着"加文件"
+- 没想到"5 阶段"这个**事实**散布在 13 处文档/模板里
+- 跟 v1.0.5/7/11/12 schema 漂移、v1.0.18 脚本漂移完全同根：**改一处忘了横向同步**
+
+**M2 · validate.sh 抓不到这一类**：
+- validate 检查文件存在 / 目录结构 / schema / 占位符 / hook if
+- 但**抓不到"事实陈述与实际文件数不符"**——这是语义层面的漂移
+- 加入 backlog："语义一致性检查"——v1.1+ 视情况
+
+**M3 · "skill body 可能含过时表述"是新维度**：
+- v1.0.7 修了 skill frontmatter，但 body 里的"4 阶段"留了 2 个月才发现
+- 加入 backlog："skill body 也要纳入审计范围"
+
+---
+
 ## [1.0.18] - 2026-06-17
 
 ### Fixed (P0 · upgrade.sh 自 v1.0.11 起 100% 失败)

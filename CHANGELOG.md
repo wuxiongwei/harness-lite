@@ -19,6 +19,36 @@
 
 ---
 
+## [1.0.15] - 2026-06-17
+
+### Added (P2 用户体验 · 空架子 → 可感知样例)
+
+- **`templates/team-knowledge/wiki/` 4 维度各填充 1 个真实样例**：
+  - `pitfalls/bash-multibyte-boundary.md`（v1.0.4/5/9 踩过 3 次的坑）
+  - `decisions/path-b-file-limit-exception.md`（v1.0.10 破例决策的完整记录）
+  - `interfaces/skill-description-schema.md`（v1.0.7 发现的 description 字段约定）
+  - `architecture/three-layer-defense.md`（v1.0.12 删 block-push 时总结的三层架构）
+- 新建 `architecture/` 和 `interfaces/` 两个缺失目录
+
+### Changed
+
+- stock_make_money 现场同步 wiki 样例（4 个 .md 文件）
+
+### 动机
+
+之前 `team-knowledge/wiki/` 是空架子：
+- AI 不知道什么时候该写进这 4 个维度
+- 不知道写什么格式（标题/正文结构）
+- 没有典型例子参考
+
+现在 distill-prompt.sh 触发时，AI 能看到 4 个真实样例，知道：
+- pitfalls = 技术踩坑（如 bash 多字节边界）
+- decisions = 设计决策 + 理由（如路径 B 硬规则破例）
+- interfaces = 跨模块接口约定（如 skill description 格式）
+- architecture = 架构设计模式（如三层防护）
+
+---
+
 ## [1.0.14] - 2026-06-16
 
 ### Added (P1 用户体验 · 来自 v1.0.13 活体复现)

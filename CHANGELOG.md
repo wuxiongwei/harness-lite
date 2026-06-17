@@ -19,6 +19,50 @@
 
 ---
 
+## [1.0.18] - 2026-06-17
+
+### Fixed (P0 · upgrade.sh 自 v1.0.11 起 100% 失败)
+
+- **`scripts/upgrade.sh` 第 144 行 `local upgrade_date=...` 在脚本主体（非函数内）使用 `local` 关键字**
+  - macOS bash 3.2 对 `local` 在非函数内的处理：报错 stderr + 触发 `set -e` 终止脚本
+  - 后果：upgrade 在 Step 4 中段崩溃，**之后所有步骤都不执行**：
+    - ❌ skills / agents / hooks / templates / settings.json 不被覆盖
+    - ❌ domain-rules.md 占位符不被渲染
+    - ❌ Step 5 CLAUDE.md 头部版本号不被更新
+    - ❌ Step 6 validate.sh 兜底不跑
+  - 但用户**几乎无法察觉**——Step 1-3 备份段已成功，"看起来在工作"
+- **修法**：去掉 `local` 关键字（第 144 行）
+- **重要现象**：`set -e` + `local` 报错的组合在 macOS 实际行为是"打 stderr + exit 0"，但在 upgrade.sh 中却出现了"set -e 中断后续"的现象——具体行为依 bash 版本和上下文略有差异，统一规避是最安全的
+
+### 实战验证
+
+- stock_make_money 现场实战 **v1.0.9 → v1.0.18 真实升级跑通**：
+  - 6 个 Step 全绿
+  - settings.json `_version` 从 1.0.12 → 1.0.18 ✅
+  - CLAUDE.md 头部 v1.0.9 → v1.0.18 ✅
+  - domain-rules.md 占位符已渲染 ✅
+  - validate.sh 兜底全绿 ✅
+
+### 元发现
+
+**M1 · 同根第 6 次 schema/脚本漂移**：
+- 这是会话内第 6 次"凭印象写代码"的 bug 实例
+- v1.0.7-12 是 schema 漂移（写配置时凭印象）
+- v1.0.18 是脚本漂移（**写脚本时凭函数内的习惯**用了 `local`）
+- 共同根因：**没在真实环境（macOS bash 3.2）跑过这段代码**
+
+**M2 · v1.0.11 的"修复"是空头修复**：
+- v1.0.11 复盘里我说"已修 upgrade.sh 渲染逻辑"
+- 实际**从未在真实 upgrade 流程中跑过**——v1.0.11 修完只跑过 init+反向测试，没跑 upgrade
+- 加入 backlog："修任何 bug 必须在 bug 真实出现路径上验证"（v1.0.13 dogfooding 协议升级的具体化）
+
+**M3 · 用户跑 validate 是关键信号**：
+- 用户没说"upgrade 失败了"——他甚至不知道
+- 是**跑 validate 后 domain-rules 占位符未渲染**这条让 bug 浮出水面
+- **validate.sh 的价值再次得到验证**：v1.0.11 的占位符自检（第 4 维）今天兑现承诺
+
+---
+
 ## [1.0.17] - 2026-06-17
 
 ### Added (模板完整性)

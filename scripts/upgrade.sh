@@ -141,7 +141,8 @@ for rule_file in "$HARNESS_LITE_ROOT/templates/.claude/rules"/*.md; do
 done
 
 # 覆盖完 rules 后，渲染新文件中的版本占位符（v1.0.11 修：之前漏了导致 domain-rules.md 残留 {{...}}）
-local upgrade_date=$(date +"%Y-%m-%d")
+# v1.0.18 修：去掉 local 关键字，否则 macOS bash 3.2 下报错 + set -e 导致后续 upgrade 流程全部中断
+upgrade_date=$(date +"%Y-%m-%d")
 for rendered in ".claude/rules/principles.md" ".claude/rules/domain-rules.md"; do
     if [ -f "$rendered" ]; then
         sed -i.bak \

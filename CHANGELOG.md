@@ -19,6 +19,24 @@
 
 ---
 
+## [1.0.16] - 2026-06-17
+
+### Added (防护完整性)
+
+- **`scripts/validate.sh` 目录检查段加 wiki 4 个子目录**：
+  - `team-knowledge/wiki/pitfalls`
+  - `team-knowledge/wiki/decisions`
+  - `team-knowledge/wiki/interfaces`
+  - `team-knowledge/wiki/architecture`
+- 之前只检查 `team-knowledge/wiki/` 顶层目录存在，v1.0.15 填充样例后如果用户不小心删了某个子目录，AI 写知识时会报错找不到路径
+
+### 验证
+
+- 反向测试：删除 `interfaces/` 目录 → validate.sh 精确报告 `✗ team-knowledge/wiki/interfaces 缺失`
+- stock 端跑 validate 全绿（4 个子目录完整）
+
+---
+
 ## [1.0.15] - 2026-06-17
 
 ### Added (P2 用户体验 · 空架子 → 可感知样例)

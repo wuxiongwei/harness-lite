@@ -52,6 +52,10 @@ for d in \
     ".claude/templates/path-b" \
     ".claude/templates/path-c" \
     "team-knowledge/wiki" \
+    "team-knowledge/wiki/pitfalls" \
+    "team-knowledge/wiki/decisions" \
+    "team-knowledge/wiki/interfaces" \
+    "team-knowledge/wiki/architecture" \
     "team-knowledge/raw" \
     "team-knowledge/schemas" \
     "docs/versions/active"; do

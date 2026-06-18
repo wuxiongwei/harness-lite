@@ -29,6 +29,9 @@ backlog/private-*.md
 # v1.0.21 · 决策学习相关（个人偏好不入团队仓库）
 .claude/decision-log.md
 .claude/auto-decide.md
+# v1.0.24 · 处理符号链接边界（H-L 仓库 dogfooding 时 .claude → templates/.claude）
+templates/.claude/decision-log.md
+templates/.claude/auto-decide.md
 
 # v1.0.23 · 多人协同相关（团队共享，**不**忽略）
 # .claude/branch-strategy.md       入仓库（团队约定）

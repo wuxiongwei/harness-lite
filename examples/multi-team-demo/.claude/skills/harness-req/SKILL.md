@@ -162,18 +162,6 @@ Task(
 
 本 Phase 在 Phase 4 模板加载后、Phase 5 铁律自检前执行。
 
-### ⚠️ v1.0.24 实施层强约束
-
-**M1 元发现**：v1.0.21 协议规定 AI 应在决策点询问 + 写 decision-log，但实际很少自动触发。
-
-**强约束**（每次 Phase 5.5 必做）：
-1. 回想本次 path-a 是否调过 AskUserQuestion？→ 调过则**必须** append decision-log
-2. 回想本次产物是否含"X 还是 Y"对比表？→ 含则**必须** append decision-log
-3. 回想对话是否含 ≥2 轮方向讨论？→ 含则**必须** append decision-log
-4. 即使无显式询问，AI 自决了任何"N 选 1"也要 append（标 AI 自决）
-
-详见 principles §13.1.1（8 个识别示例）+ §13.1.2（自检清单）。
-
 ### 遇到决策点时
 
 "决策点" = 有 ≥ 2 个合理选项的子问题需要拍板（如用户故事粒度、AC 数量、排序方式等）。

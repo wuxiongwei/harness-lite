@@ -114,15 +114,6 @@ doc-generator 完成后，主 skill 追问：
 
 遇到决策点（≥ 2 个合理选项）时，按 principles §13 流程：查 auto-decide → 命中自决+标注 / 未命中询问+记 log。
 
-### ⚠️ v1.0.24 强约束（防 M1 实施 gap）
-
-每次 Phase 4.5 必做自检：
-- AskUserQuestion 调过？→ append decision-log
-- 产物含"X 还是 Y"对比表（如 D1-D5）？→ append decision-log
-- AI 自决了 N 选 1？→ append decision-log（标 AI 自决）
-
-详见 principles §13.1.1 / §13.1.2。
-
 **典型决策点（harness-design）**：
 - 表格格式（Markdown 表 / HTML 表 / 列表）
 - 模块拆分粒度（拆子模块 vs 单文件）

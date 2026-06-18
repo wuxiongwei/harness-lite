@@ -185,11 +185,6 @@ Task(
 
 遇到决策点（≥ 2 个合理选项）时，按 principles §13 流程：查 auto-decide → 命中自决+标注 / 未命中询问+记 log。
 
-### ⚠️ v1.0.24 强约束（防 M1 实施 gap）
-
-每次必做：AskUserQuestion 调过 / "X 还是 Y" 对比 / AI 自决 N 选 1 → 都要 append decision-log。
-详见 principles §13.1.1 / §13.1.2。
-
 **典型决策点（harness-review）**：
 - 一致性审计视角数量（3 维 / 5 维）
 - 输出粒度（仅差异点 / 完整对比表）

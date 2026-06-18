@@ -19,6 +19,89 @@
 
 ---
 
+## [1.0.24] - 2026-06-18
+
+### Fixed (P1 · v1.0.23 M1 实锤 · 协议落地 vs 实施层 gap)
+
+> **不 push GitHub**（沿用 v1.0.23 用户指定）
+
+#### 验证暴露的真相
+
+用户要求"用 example 自己验证 v1.0.23 多人协同" → 创建 `examples/multi-team-demo` 模拟 3 人场景 → 审视过去 21 个版本：
+
+| 版本 | 应记决策点 | 实际记录 |
+|-----|----------|---------|
+| v1.0.21（4 次方向纠偏 + 5 个 D） | 9+ 条 | 0 条 |
+| v1.0.22（文档撰写期间细节决策） | 5+ 条 | 0 条 |
+| v1.0.23（4 次 AskUserQuestion + 8 个 D） | 12+ 条 | 0 条 |
+
+**实锤**：协议存在 ≠ 协议被遵循（系统性，不是偶然）。
+
+#### 修复（用户拍板 A · 软约束）
+
+- **`templates/.claude/rules/principles.md` +§13.1.1 决策点识别示例**（+110 行）
+  - 8 个真实场景示例（AskUserQuestion 触发 / "X 还是 Y" 对比表 / 来回讨论 / N 选 1 / 阈值 / 命名 / yes-no / 隐式决策）
+  - §13.1.2 自检清单（6 条问句 + "任一为是 → log 必须写"）
+- **5 个 skill body 加 "v1.0.24 强约束" 段**：
+  - harness-req（详细版 +12）
+  - harness-design / harness-impact / harness-review / harness-test-ci（精简版 +5 各，引用 §13.1.1）
+- **顺手修符号链接边界 bug**：
+  - `.gitignore` 加 `templates/.claude/decision-log.md` 和 `auto-decide.md`
+  - 解决 H-L 仓库 dogfooding 时（`.claude → templates/.claude`）gitignore 规则被绕过
+
+#### 实测协议**首次真触发**
+
+修复后立刻：
+```bash
+$ cat .claude/decision-log.md
+## v1.0.24 path-c · 修复强度
+- 用户答：A 补示例纲领（软）
+## v1.0.24 · 验证场景 · multi-team-demo 设计
+- AI 自决：B + A
+## v1.0.24 · 修复方案
+- 用户答：A
+```
+
+**3 条记录** —— 这是 H-L 仓库**首次真触发**协议自动写入（21 个版本以来）。
+
+### Added · examples/multi-team-demo
+
+- 3 人模拟场景（alice / bob / zoe）
+- 各自 assignments + 故意违规分支名
+- 留作后续 dogfooding 测试基底
+
+### 元发现
+
+- **M2 · 软约束 + 示例 = 协议层产品的关键**：协议本身存在不够，必须配"识别示例"+"自检清单"
+- **M3 · dogfooding 价值再次实锤**：每次大协议改动必须 dogfood，否则等用户反馈才发现 gap
+- **M4 · dogfooding 顺手暴露周边 bug**：符号链接 + gitignore 边界问题在写 log 时被发现
+
+### 三件套原则（沉淀到 backlog）
+
+未来任何**协议层版本**必须三件套齐备：
+1. 协议本身（描述）
+2. 实施约束（强约束 / Phase checklist）
+3. 示例兜底（让 AI 识别具体场景）
+
+缺一不可。
+
+### Verified
+
+- principles §13.1.1 含 ≥ 8 识别示例 ✅
+- §13.1.2 自检清单 ≥ 6 条 ✅
+- 5 skill 都加强约束段 ✅
+- .gitignore 符号链接边界生效 ✅
+- **协议首次真触发**：H-L 仓库 .claude/decision-log.md 含 3 条 ✅
+- stock 现场同步 6 文件 + validate 全绿 ✅
+
+### Not done
+
+- 不加 SubagentStop hook（C 强约束选项）—— 留备份
+- 不修改 v1.0.21 / v1.0.23 协议本身 —— 只补示例 + 自检
+- 待 stock 实测：v1.0.24 强约束是否真让 AI 在后续 path-a 自动写 log
+
+---
+
 ## [1.0.23] - 2026-06-18
 
 ### Added (Standard 协同机制 · principles §14 多人协同协议)

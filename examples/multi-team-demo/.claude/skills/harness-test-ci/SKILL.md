@@ -150,11 +150,6 @@ grep -rn "import.*UserService\|from.*UserService" --include="*.py" src/
 
 遇到决策点（≥ 2 个合理选项）时，按 principles §13 流程：查 auto-decide → 命中自决+标注 / 未命中询问+记 log。
 
-### ⚠️ v1.0.24 强约束（防 M1 实施 gap）
-
-每次必做：AskUserQuestion 调过 / "X 还是 Y" 对比 / AI 自决 N 选 1 → 都要 append decision-log。
-详见 principles §13.1.1 / §13.1.2。
-
 **典型决策点（harness-test-ci）**：
 - 全量 vs 增量（全量回归 / 仅本次相关）
 - 失败时策略（fast-fail / 继续跑完）

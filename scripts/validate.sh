@@ -320,6 +320,54 @@ else
 fi
 
 
+# ============================================================
+# 用户故事真闭环检查（v1.0.27 · 防"完成"但用户用不了的 bug）
+# ============================================================
+echo ""
+echo "📋 用户故事真闭环检查（v1.0.27+ · principles §6.1）："
+
+set +e
+user_story_ok=true
+
+# 扫描所有 active 版本的 01-需求.md + 05-完成.md
+if [ -d "docs/versions/active" ]; then
+    for version_dir in docs/versions/active/*/; do
+        version_name=$(basename "$version_dir")
+        req_file="$version_dir/01-需求.md"
+        done_file="$version_dir/05-完成.md"
+
+        # 01-需求 含用户故事 / AC → 05-完成 必须含"用户路径自检"段
+        if [ -f "$req_file" ]; then
+            if grep -qE "用户故事|验收标准|AC" "$req_file" 2>/dev/null; then
+                # 该版本有用户故事
+                if [ -f "$done_file" ]; then
+                    if ! grep -q "用户路径自检\|用户从哪开始" "$done_file" 2>/dev/null; then
+                        echo -e "${RED}✗${NC}  $version_name: 01-需求 含用户故事，但 05-完成 缺'用户路径自检'段（§6.1 违规）"
+                        user_story_ok=false
+                    fi
+                else
+                    # 05-完成 还没写（可能在进行中）→ 警告
+                    echo -e "${YELLOW}⚠${NC}  $version_name: 01-需求 含用户故事，但 05-完成.md 不存在（可能进行中）"
+                fi
+            fi
+        fi
+    done
+fi
+set -e
+
+if $user_story_ok; then
+    if [ -d "docs/versions/active" ] && [ "$(ls -A docs/versions/active 2>/dev/null)" ]; then
+        echo -e "${GREEN}✓${NC}  用户故事真闭环检查通过"
+    else
+        echo -e "${YELLOW}⚠${NC}  无 active 版本（未启用 path-a）"
+    fi
+else
+    errors=$((errors+1))
+    echo -e "    ${YELLOW}修复：${NC}05-完成.md 必须含'用户路径自检'段（见 templates/templates/path-a/05-完成.md）"
+    echo -e "    ${YELLOW}原因：${NC}v1.0.27 用户反馈——没有此段的版本常误报'完成'但用户实际用不了"
+fi
+
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $errors -eq 0 ]; then

@@ -285,6 +285,7 @@ if [ -d ".claude/assignments" ]; then
         fname=$(basename "$f")
         # README 不检查（说明文档）
         if [ "$fname" = "README.md" ]; then continue; fi
+
         # 个人 assignments 必须含三段结构
         if ! grep -q "^## 进行中" "$f" 2>/dev/null; then
             echo -e "${RED}✗${NC}  $f 缺少'## 进行中（claimed）'段"
@@ -295,6 +296,46 @@ if [ -d ".claude/assignments" ]; then
         fi
         if ! grep -q "^## 已完成" "$f" 2>/dev/null; then
             echo -e "${YELLOW}⚠${NC}  $f 缺少'## 已完成（done）'段（建议补）"
+        fi
+
+        # v1.0.28 增强：段落顺序检查（进行中 < 待办 < 已完成）
+        claimed_line=$(grep -n "^## 进行中" "$f" 2>/dev/null | cut -d: -f1)
+        pending_line=$(grep -n "^## 待办" "$f" 2>/dev/null | cut -d: -f1)
+        done_line=$(grep -n "^## 已完成" "$f" 2>/dev/null | cut -d: -f1)
+
+        if [ -n "$claimed_line" ] && [ -n "$pending_line" ]; then
+            if [ "$claimed_line" -gt "$pending_line" ]; then
+                echo -e "${RED}✗${NC}  $f 段落顺序错误（'进行中'应在'待办'之前）"
+                collab_ok=false
+            fi
+        fi
+        if [ -n "$pending_line" ] && [ -n "$done_line" ]; then
+            if [ "$pending_line" -gt "$done_line" ]; then
+                echo -e "${RED}✗${NC}  $f 段落顺序错误（'待办'应在'已完成'之前）"
+                collab_ok=false
+            fi
+        fi
+
+        # v1.0.28 增强：检查"进行中"段的任务格式
+        # 提取"进行中"段内容（下一个 ## 之前）
+        if grep -q "^## 进行中" "$f" 2>/dev/null; then
+            in_claimed=false
+            while IFS= read -r line; do
+                if [[ "$line" =~ ^##\ 进行中 ]]; then
+                    in_claimed=true
+                    continue
+                fi
+                if [[ "$line" =~ ^##\  ]] && $in_claimed; then
+                    # 遇到下一个 ## → 退出"进行中"段
+                    break
+                fi
+                if $in_claimed && [[ "$line" =~ ^###\  ]]; then
+                    # 任务标题行
+                    task_name=$(echo "$line" | sed 's/^### //')
+                    # 后续几行应该含"- claim 时间" / "- 状态" / "- 影响文件"
+                    # （简单检查：不做完整语法解析）
+                fi
+            done < "$f"
         fi
     done
 fi

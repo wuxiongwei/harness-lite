@@ -19,7 +19,118 @@
 
 ---
 
-## [1.0.29] - 2026-06-18
+## [1.0.30] - 2026-06-18
+
+### Removed · 大回滚：删除 Standard + Solo-Multi（v1.0.23-29 · 不 push）
+
+> **用户问**："Lite 用户怎么用？"  
+> **我的答案**：安装完就能用，不需要"怎么用"（3 行）  
+> **用户问**："Standard 用户怎么用？"  
+> **我的答案**：（说不出 5 分钟答案，需要 1500 行文档）  
+> **用户批评**："Solo-Multi 这么复杂用户怎么会用"  
+> **用户决策**：回到 v1.0.22，删掉 Standard + Solo-Multi
+
+#### 删除理由
+
+**产品哲学判断**：
+```
+好产品 = 用户不需要问"怎么用"（Lite：0 学习成本）
+坏产品 = 需要 1500 行文档解释"怎么用"（Standard / Solo-Multi）
+```
+
+**v1.0.23-29 偏离了 Lite 的"0 学习成本"哲学**——引入了用户心智负担：
+- Standard A2/A3：要求手动维护 assignments 三段结构（进行中/待办/已完成）+ 影响文件
+- Solo-Multi：要求手动维护 tasks.md（DOING/TODO/DONE）+ 记得说"切到 X"
+
+**正确的产品边界**：
+- H-L 做"AI 工作方法论"（path-a 流程 + 质量）✅
+- 不做"项目管理"（任务分配 / 进度追踪）❌ ← Standard / Solo-Multi 踩线了
+
+**多人协同 / 单人多任务的正确解法**：
+- 用户用成熟工具（GitHub / Linear / Jira / Notion）管理任务
+- H-L 专注质量 + 流程，不重复造轮子
+
+#### 删除内容（-3200 行）
+
+**文件删除**：
+- ❌ docs/03-standard-guide/（4 份文档，1500 行）
+- ❌ docs/04-solo-multi-guide/（1 份文档，400 行）
+- ❌ examples/multi-team-demo/（示例项目）
+- ❌ templates/.claude/branch-strategy.md
+- ❌ templates/.claude/assignments/
+- ❌ templates/.claude/tasks.md
+
+**协议删除**：
+- ❌ principles §14 多人协同协议（200 行）
+- ❌ principles §15 单人多任务协议（100 行）
+- ❌ 自检清单 13 条 → 12 条（删除 §14 检查项）
+
+**validate 删除**：
+- ❌ §14 协同 schema 检查
+- ❌ Solo-Multi vs Standard 互斥检查
+
+**README 删除**：
+- ❌ Standard 文档入口（5 行）
+- ❌ Solo-Multi 文档入口（1 行）
+- ❌ multi-team-demo 示例
+
+#### 保留内容（v1.0.27 质量强化）
+
+**不删除 v1.0.27 §6.1**——这是质量强化，不增加用户负担：
+- ✅ principles §6.1 用户故事真闭环硬约束
+- ✅ harness-review 维度6：AC ↔ 用户路径真验证
+- ✅ 05-完成 模板"用户路径自检"段
+- ✅ validate 用户故事真闭环检查
+
+**理由**：§6.1 是"防 AI 误报完成"的质量检查，用户无需手动维护任何文件。
+
+#### 回滚后的 H-L
+
+```
+版本演进：
+v1.0.0-22 ✅ Lite（path-a + 决策学习）
+v1.0.23-29 ❌ Standard + Solo-Multi（删除）
+v1.0.30    ✅ Lite + §6.1 质量强化（回归简洁）
+```
+
+**产品定位回归**：
+- **Lite**（默认）：0 配置 / 0 学习 / 0 文档 / 安装完就能用
+- ~~Standard~~：删除
+- ~~Solo-Multi~~：删除
+
+#### 对 stock 的影响
+
+**如果 stock 已启用 Standard**：
+- 删除 `.claude/branch-strategy.md`
+- 删除 `.claude/assignments/`
+- 回到 Lite 模式
+
+**如果 stock 已启用 Solo-Multi**：
+- 删除 `.claude/tasks.md`
+- 回到 Lite 模式
+
+**Lite 模式下多人协同 / 单人多任务怎么办**：
+- 用外部工具（Linear / Jira / Notion / GitHub Projects）
+- H-L 专注质量，不管理任务
+
+#### 元发现
+
+**M1 · "用户怎么用"是产品复杂度的试金石**：
+- Lite："安装完就能用"（3 行）→ ✅ 简洁
+- Standard："需要 1500 行文档"（说不出 5 分钟答案）→ ❌ 过度复杂
+- Solo-Multi："这么复杂用户怎么会用"（用户批评）→ ❌ 过度复杂
+
+→ 加入 backlog：**未来任何新功能，必须能 5 分钟说清"用户怎么用"**。
+
+**M2 · 产品边界的重要性**：
+- H-L 核心：AI 工作方法论（质量 + 流程）
+- 不应碰：项目管理（任务 / 进度 / 协作）← Standard / Solo-Multi 越界了
+
+→ 回归产品愿景：**让 AI 把事情做对，而不是让 H-L 替代 Linear / Jira**。
+
+---
+
+## [1.0.29] - 2026-06-18 · ❌ 已删除
 
 ### Added · Solo-Multi 单人多任务并行方案（Lite 扩展 · 不 push）
 

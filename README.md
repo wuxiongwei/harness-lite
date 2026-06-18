@@ -143,11 +143,6 @@ harness-lite/
 | ↳ /harness-impact 影响面分析 | [03-harness-impact.md](docs/02-skill-reference/03-harness-impact.md) ✅ |
 | ↳ /harness-test-ci 全量测试 | [04-harness-test-ci.md](docs/02-skill-reference/04-harness-test-ci.md) ✅ |
 | ↳ /harness-review 一致性审计 | [05-harness-review.md](docs/02-skill-reference/05-harness-review.md) ✅ |
-| **启用 Standard 多人协同**（v1.0.23+ · 2+ 人团队）| [Standard 快速开始](docs/03-standard-guide/01-quick-start.md) ✅ |
-| ↳ 深入理解 A1/A2/A3/B1 | [4 能力用户手册](docs/03-standard-guide/02-standard-capabilities.md) ✅ |
-| ↳ 2-3 人 vs 5+ 人团队用法 | [多人协同最佳实践](docs/03-standard-guide/03-standard-best-practices.md) ✅ |
-| ↳ 取消 claim / 多 owner / schema | [边界场景补充](docs/03-standard-guide/04-standard-edge-cases.md) ✅ |
-| **单人多任务并行**（v1.0.29+ · Solo-Multi 模式）| [Solo-Multi 指南](docs/04-solo-multi-guide/01-solo-multi.md) ✅ |
 | 路径 A/B/C 怎么选 | 📝 待补（v1.1） |
 | 升级 / 卸载 | 直接跑 `scripts/upgrade.sh` 或 `scripts/uninstall.sh` |
 | 看历史变更 | [CHANGELOG.md](CHANGELOG.md) ✅ |
@@ -162,9 +157,6 @@ harness-lite/
 | 示例 | 主题 | 适合学 |
 |-----|------|-------|
 | [examples/md-counter](examples/md-counter) | path-a 5 阶段完整流程（CLI 工具开发） | path-a 怎么走 |
-| [examples/multi-team-demo](examples/multi-team-demo) | v1.0.23+ Standard 多人协同（3 人虚拟团队） | A1 / A2 / A3 / B1 怎么用 |
-
-建议先看 md-counter 理解 path-a 流程，再看 multi-team-demo 理解多人协同。
 
 ---
 

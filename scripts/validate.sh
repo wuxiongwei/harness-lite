@@ -257,109 +257,6 @@ else
 fi
 
 
-# ============================================================
-# §14 多人协同协议 schema 校验（v1.0.25-final · 防 §14 schema 漂移）
-# ============================================================
-echo ""
-echo "📋 §14 多人协同协议 schema（v1.0.23+）："
-
-set +e
-collab_ok=true
-
-# 1. branch-strategy.md（如存在）
-if [ -f ".claude/branch-strategy.md" ]; then
-    # 必须含 6 类前缀任一（feat/fix/refactor/docs/chore/hotfix）
-    if ! grep -qE "(feat|fix|refactor|docs|chore|hotfix)/" ".claude/branch-strategy.md" 2>/dev/null; then
-        echo -e "${RED}✗${NC}  branch-strategy.md 缺少标准前缀（feat/fix/refactor/docs/chore/hotfix）"
-        collab_ok=false
-    fi
-    # 必须含"主分支保护"段
-    if ! grep -q "主分支保护\|分支保护\|main：禁止" ".claude/branch-strategy.md" 2>/dev/null; then
-        echo -e "${YELLOW}⚠${NC}  branch-strategy.md 缺少'主分支保护'段（建议补）"
-    fi
-fi
-
-# 2. assignments/<人>.md（如存在）
-if [ -d ".claude/assignments" ]; then
-    for f in .claude/assignments/*.md; do
-        fname=$(basename "$f")
-        # README 不检查（说明文档）
-        if [ "$fname" = "README.md" ]; then continue; fi
-
-        # 个人 assignments 必须含三段结构
-        if ! grep -q "^## 进行中" "$f" 2>/dev/null; then
-            echo -e "${RED}✗${NC}  $f 缺少'## 进行中（claimed）'段"
-            collab_ok=false
-        fi
-        if ! grep -q "^## 待办" "$f" 2>/dev/null; then
-            echo -e "${YELLOW}⚠${NC}  $f 缺少'## 待办（pending）'段（建议补）"
-        fi
-        if ! grep -q "^## 已完成" "$f" 2>/dev/null; then
-            echo -e "${YELLOW}⚠${NC}  $f 缺少'## 已完成（done）'段（建议补）"
-        fi
-
-        # v1.0.28 增强：段落顺序检查（进行中 < 待办 < 已完成）
-        claimed_line=$(grep -n "^## 进行中" "$f" 2>/dev/null | cut -d: -f1)
-        pending_line=$(grep -n "^## 待办" "$f" 2>/dev/null | cut -d: -f1)
-        done_line=$(grep -n "^## 已完成" "$f" 2>/dev/null | cut -d: -f1)
-
-        if [ -n "$claimed_line" ] && [ -n "$pending_line" ]; then
-            if [ "$claimed_line" -gt "$pending_line" ]; then
-                echo -e "${RED}✗${NC}  $f 段落顺序错误（'进行中'应在'待办'之前）"
-                collab_ok=false
-            fi
-        fi
-        if [ -n "$pending_line" ] && [ -n "$done_line" ]; then
-            if [ "$pending_line" -gt "$done_line" ]; then
-                echo -e "${RED}✗${NC}  $f 段落顺序错误（'待办'应在'已完成'之前）"
-                collab_ok=false
-            fi
-        fi
-
-        # v1.0.28 增强：检查"进行中"段的任务格式
-        # 提取"进行中"段内容（下一个 ## 之前）
-        if grep -q "^## 进行中" "$f" 2>/dev/null; then
-            in_claimed=false
-            while IFS= read -r line; do
-                if [[ "$line" =~ ^##\ 进行中 ]]; then
-                    in_claimed=true
-                    continue
-                fi
-                if [[ "$line" =~ ^##\  ]] && $in_claimed; then
-                    # 遇到下一个 ## → 退出"进行中"段
-                    break
-                fi
-                if $in_claimed && [[ "$line" =~ ^###\  ]]; then
-                    # 任务标题行
-                    task_name=$(echo "$line" | sed 's/^### //')
-                    # 后续几行应该含"- claim 时间" / "- 状态" / "- 影响文件"
-                    # （简单检查：不做完整语法解析）
-                fi
-            done < "$f"
-        fi
-    done
-fi
-
-# 3. .gitignore 不能忽略 branch-strategy 或 assignments（与 §14 入仓库语义冲突）
-if [ -f ".gitignore" ]; then
-    if grep -qE "^\.claude/branch-strategy\.md|^\.claude/assignments/" ".gitignore" 2>/dev/null; then
-        echo -e "${RED}✗${NC}  .gitignore 错误地忽略了协同文件（§14 要求入仓库）"
-        collab_ok=false
-    fi
-fi
-set -e
-
-if $collab_ok; then
-    if [ -f ".claude/branch-strategy.md" ] || [ -d ".claude/assignments" ]; then
-        echo -e "${GREEN}✓${NC}  §14 协同 schema 通过"
-    else
-        echo -e "${YELLOW}⚠${NC}  §14 协同未启用（branch-strategy.md / assignments/ 都不存在）—— 单人项目可忽略"
-    fi
-else
-    errors=$((errors+1))
-    echo -e "    ${YELLOW}修复：${NC}参考 templates/.claude/branch-strategy.md 和 templates/.claude/assignments/README.md"
-fi
-
 
 # ============================================================
 # 用户故事真闭环检查（v1.0.27 · 防"完成"但用户用不了的 bug）
@@ -411,51 +308,21 @@ fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# ============================================================
-# Solo-Multi vs Standard 互斥检查（v1.0.29）
-# ============================================================
-echo ""
-echo "📋 Solo-Multi vs Standard 互斥检查（v1.0.29+）："
-
-set +e
-solo_standard_ok=true
-
-if [ -f ".claude/tasks.md" ] && [ -d ".claude/assignments" ]; then
-    echo -e "${RED}✗${NC}  Solo-Multi（.claude/tasks.md）与 Standard（.claude/assignments/）不能共存"
-    echo -e "    ${YELLOW}原因：${NC}两者解决不同问题（单人多任务 vs 多人协同），混用会冲突"
-    echo -e "    ${YELLOW}修复：${NC}选一个：单人用 Solo-Multi，多人用 Standard"
-    solo_standard_ok=false
-    errors=$((errors+1))
-fi
-set -e
-
-if $solo_standard_ok; then
-    if [ -f ".claude/tasks.md" ]; then
-        echo -e "${GREEN}✓${NC}  Solo-Multi 模式（单人多任务）"
-    elif [ -d ".claude/assignments" ]; then
-        echo -e "${GREEN}✓${NC}  Standard 模式（多人协同）"
-    else
-        echo -e "${GREEN}✓${NC}  Lite 模式（默认，无扩展）"
-    fi
-fi
-
-
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $errors -eq 0 ]; then
     echo -e "${GREEN}✅ 所有检查通过！${NC}"
     echo ""
-    echo "下一步："
+    echo "Harness-Lite 就绪！使用方法："
+    echo ""
     echo "  1. claude（启动 Claude Code）"
     echo "  2. /clear"
     echo "  3. 介绍一下我们项目（验证 AI 是否加载规则）"
-    exit 0
+    echo ""
 else
     echo -e "${RED}✗ 发现 $errors 个问题${NC}"
     echo ""
-    echo "建议："
-    echo "  - 重新运行 init.sh"
-    echo "  - 或检查上述缺失项手动修复"
+    echo "请根据上方提示修复，或参考文档："
+    echo "  - 快速上手：docs/01-getting-started/01-quickstart.md"
+    echo "  - 完整文档：README.md"
+    echo ""
     exit 1
 fi

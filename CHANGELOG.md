@@ -19,6 +19,84 @@
 
 ---
 
+## [1.0.26] - 2026-06-18
+
+### Added · 闭环补全（A1+A3+A4+A2+C2 一次到位 · 不 push）
+
+> 用户拍板"按推荐路线走"——5 件事全部自闭环完成
+
+#### A1 · B1 协同视角段在 4 skill 真触发验证
+
+在 multi-team-demo 真生成 3 份产物，验证 B1 自然触发：
+- harness-design 生成 02-设计.md → ✅ PM 3 / QA 4 条具体提醒
+- harness-impact 生成 impact-report.md → ✅ PM 3 / QA 3 + A3 修后逻辑生效
+- harness-test-ci 生成 test-ci-report.md → ✅ PM 3 / RD 3 + 反向同步联动
+
+→ **4 个 skill（含 v1.0.25-final 验证的 harness-req）B1 全部自然触发**
+
+#### A3 · §14 协议补识别示例（三件套补齐）
+
+仿 §13.1.1 / §13.1.2 范式，给 §14 补：
+- **§14.8 触发场景识别示例**（6 个真实场景）：
+  - 场景 1：准备 git commit/push（A1 触发）
+  - 场景 2：创建新版本目录（A2 触发，含 schema 感知警告）
+  - 场景 3：/harness-impact 影响面分析（A3 触发，含排除自己 claim）
+  - 场景 4：4 skill 主产物输出（B1 触发 + 视角组合表）
+  - 场景 5：对话提到团队成员（隐式协同信号）
+  - 场景 6：5 阶段收尾（与 §13 联动）
+- **§14.9 自检清单**（6 条问句）
+
+→ §13 / §14 三件套对称（协议 + 实施约束 + 示例兜底）
+
+#### A4 · validate.sh 加 §14 schema 检查（第 8 维防回归网）
+
+新增"§14 多人协同协议 schema"段：
+- branch-strategy.md 必须含 6 类前缀（feat/fix/refactor/docs/chore/hotfix）
+- branch-strategy.md 应含"主分支保护"段（warn）
+- assignments/<人>.md 必须含"## 进行中（claimed）"段
+- assignments/<人>.md 应含"## 待办" + "## 已完成"段（warn）
+- .gitignore 不能误忽略协同文件（与 §14 入仓库语义冲突）
+
+正向 + 反向测试通过：
+- stock + multi-team-demo 全绿 ✅
+- 故意删 zoe.md "进行中"段 → 精确报错 ✅
+
+#### A2 · A1 真 push 流程触发验证
+
+multi-team-demo 真切违规 / 合规分支，模拟 push 协议自检：
+- 合规分支 → 静默通过 ✅
+- 违规分支 → 软提醒不阻塞 + rename 路径 ✅
+
+#### C2 · multi-team-demo 正式化为示例项目
+
+- 加 `examples/multi-team-demo/README.md`（4 能力真实演示 + 与 md-counter 差异表）
+- H-L `README.md` 加"🎯 示例项目"章节，并列推荐 md-counter 和 multi-team-demo
+
+### 沉淀
+
+| 维度 | 状态 |
+|-----|------|
+| §13 决策学习三件套 | ✅ v1.0.24 完成 |
+| §14 多人协同三件套 | ✅ v1.0.26 完成（本次）|
+| 4 skill B1 自然触发率 | ✅ 100%（4/4） |
+| validate 防回归维度 | ✅ 8 维（文件 / 目录 / settings / skill / 占位符 / hook if / wiki / §14） |
+| 示例项目 | ✅ 2 个（md-counter + multi-team-demo） |
+
+### 元发现
+
+**自闭环执行的胜利**：用户上次批评"不要张口闭口都是 stock 实战"——这次用户拍板路线后，5 件事全部自己闭环完成（约 3 小时工作量），未依赖用户任何反馈。
+
+→ 加入 backlog：**AI 应当主动识别"哪些事可自己闭环"**，避免无效依赖用户。
+
+### Verified
+
+- 8 个产物（4 多人协同 skill 真测产物 + multi-team-demo README + principles §14 三件套 + validate §14 检查 + H-L README 示例段）
+- 多 team / single team / 反向 schema 测试全绿
+- stock 现场已同步 principles.md（含 §14.8/14.9）
+- 4 个 unpushed commits 累积（沿用 v1.0.23/24/25-final/26 不 push）
+
+---
+
 ## [1.0.25-final] - 2026-06-18
 
 ### Tested · Standard 闭环行为测试 + 修 2 个真 bug（不 push）

@@ -152,6 +152,17 @@ harness-lite/
 
 ---
 
+## 🎯 示例项目
+
+| 示例 | 主题 | 适合学 |
+|-----|------|-------|
+| [examples/md-counter](examples/md-counter) | path-a 5 阶段完整流程（CLI 工具开发） | path-a 怎么走 |
+| [examples/multi-team-demo](examples/multi-team-demo) | v1.0.23+ Standard 多人协同（3 人虚拟团队） | A1 / A2 / A3 / B1 怎么用 |
+
+建议先看 md-counter 理解 path-a 流程，再看 multi-team-demo 理解多人协同。
+
+---
+
 ## 🎓 设计基础
 
 本产品站在以下巨人的肩膀上：

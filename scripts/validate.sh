@@ -257,6 +257,69 @@ else
 fi
 
 
+# ============================================================
+# §14 多人协同协议 schema 校验（v1.0.25-final · 防 §14 schema 漂移）
+# ============================================================
+echo ""
+echo "📋 §14 多人协同协议 schema（v1.0.23+）："
+
+set +e
+collab_ok=true
+
+# 1. branch-strategy.md（如存在）
+if [ -f ".claude/branch-strategy.md" ]; then
+    # 必须含 6 类前缀任一（feat/fix/refactor/docs/chore/hotfix）
+    if ! grep -qE "(feat|fix|refactor|docs|chore|hotfix)/" ".claude/branch-strategy.md" 2>/dev/null; then
+        echo -e "${RED}✗${NC}  branch-strategy.md 缺少标准前缀（feat/fix/refactor/docs/chore/hotfix）"
+        collab_ok=false
+    fi
+    # 必须含"主分支保护"段
+    if ! grep -q "主分支保护\|分支保护\|main：禁止" ".claude/branch-strategy.md" 2>/dev/null; then
+        echo -e "${YELLOW}⚠${NC}  branch-strategy.md 缺少'主分支保护'段（建议补）"
+    fi
+fi
+
+# 2. assignments/<人>.md（如存在）
+if [ -d ".claude/assignments" ]; then
+    for f in .claude/assignments/*.md; do
+        fname=$(basename "$f")
+        # README 不检查（说明文档）
+        if [ "$fname" = "README.md" ]; then continue; fi
+        # 个人 assignments 必须含三段结构
+        if ! grep -q "^## 进行中" "$f" 2>/dev/null; then
+            echo -e "${RED}✗${NC}  $f 缺少'## 进行中（claimed）'段"
+            collab_ok=false
+        fi
+        if ! grep -q "^## 待办" "$f" 2>/dev/null; then
+            echo -e "${YELLOW}⚠${NC}  $f 缺少'## 待办（pending）'段（建议补）"
+        fi
+        if ! grep -q "^## 已完成" "$f" 2>/dev/null; then
+            echo -e "${YELLOW}⚠${NC}  $f 缺少'## 已完成（done）'段（建议补）"
+        fi
+    done
+fi
+
+# 3. .gitignore 不能忽略 branch-strategy 或 assignments（与 §14 入仓库语义冲突）
+if [ -f ".gitignore" ]; then
+    if grep -qE "^\.claude/branch-strategy\.md|^\.claude/assignments/" ".gitignore" 2>/dev/null; then
+        echo -e "${RED}✗${NC}  .gitignore 错误地忽略了协同文件（§14 要求入仓库）"
+        collab_ok=false
+    fi
+fi
+set -e
+
+if $collab_ok; then
+    if [ -f ".claude/branch-strategy.md" ] || [ -d ".claude/assignments" ]; then
+        echo -e "${GREEN}✓${NC}  §14 协同 schema 通过"
+    else
+        echo -e "${YELLOW}⚠${NC}  §14 协同未启用（branch-strategy.md / assignments/ 都不存在）—— 单人项目可忽略"
+    fi
+else
+    errors=$((errors+1))
+    echo -e "    ${YELLOW}修复：${NC}参考 templates/.claude/branch-strategy.md 和 templates/.claude/assignments/README.md"
+fi
+
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $errors -eq 0 ]; then

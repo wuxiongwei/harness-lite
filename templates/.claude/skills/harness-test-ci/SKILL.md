@@ -146,6 +146,17 @@ grep -rn "import.*UserService\|from.*UserService" --include="*.py" src/
 
 ---
 
+## Phase 4.5：决策点处理（v1.0.21+ · principles §13）
+
+遇到决策点（≥ 2 个合理选项）时，按 principles §13 流程：查 auto-decide → 命中自决+标注 / 未命中询问+记 log。
+
+**典型决策点（harness-test-ci）**：
+- 全量 vs 增量（全量回归 / 仅本次相关）
+- 失败时策略（fast-fail / 继续跑完）
+- 测试报告粒度（简要 / 详细 / 附日志）
+
+---
+
 ## Phase 5：测试报告生成
 
 输出位置：`docs/versions/active/v{X.Y}-{slug}/test-ci-report.md`

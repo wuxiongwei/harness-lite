@@ -110,6 +110,19 @@ doc-generator 完成后，主 skill 追问：
 
 ---
 
+## Phase 4.5：决策点处理（v1.0.21+ · principles §13）
+
+遇到决策点（≥ 2 个合理选项）时，按 principles §13 流程：查 auto-decide → 命中自决+标注 / 未命中询问+记 log。
+
+**典型决策点（harness-design）**：
+- 表格格式（Markdown 表 / HTML 表 / 列表）
+- 模块拆分粒度（拆子模块 vs 单文件）
+- 关键决策表样式（横表 / 竖表）
+- 技术方案数量（1 方案 / 2-3 备选方案对比）
+- 设计图是否需要（文字描述 vs ASCII 图）
+
+---
+
 ## Phase 5：铁律自检
 
 ```

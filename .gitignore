@@ -26,6 +26,10 @@ test-output/
 # 用户自己的反馈（不入产品仓）
 backlog/private-*.md
 
+# v1.0.21 · 决策学习相关（个人偏好不入团队仓库）
+.claude/decision-log.md
+.claude/auto-decide.md
+
 # 注：.claude 是符号链接到 templates/.claude（dogfooding）
 # 让 git 跟踪符号链接本身（以路径形式存储），不忽略
 # 这样 clone 后符号链接保留，dogfooding 配置同步

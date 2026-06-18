@@ -71,8 +71,22 @@ Read .claude/assignments/*.md（所有人）
 │        [1] 加入协作（多 owner）
 │        [2] 改为新版本号
 │        [3] 取消"
-└─ 否 → 静默执行 + 追加到当前用户 assignments
+└─ 否 → 静默执行 + 追加到当前用户 assignments 的"进行中（claimed）"段
 ```
+
+**⚠️ v1.0.25 真闭环测试暴露的 bug · 必读**：
+
+追加新 claim 到 assignments 时，**必须插入"进行中（claimed）"段**，不能 cat >> 简单追加到文件末尾（会错误插入"已完成（done）"段）。
+
+正确做法：
+1. Read 当前 assignments 文件全文
+2. 找到 `## 进行中（claimed）` 标题
+3. 在该段（下一个 `## ` 标题前）插入新 claim
+4. Write 全文
+
+错误做法（会触发 bug）：
+- ❌ `cat >> file` 无脑追加（错入 done 段）
+- ❌ Edit 工具用末尾段落字符串匹配（会搞错段落）
 
 ### 2. 影响面分析时（/harness-impact）
 

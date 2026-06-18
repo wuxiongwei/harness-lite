@@ -136,13 +136,19 @@ harness-lite/
 | 知道适不适合我 | [目标用户](docs/00-product-spec/03-target-users.md) ✅ |
 | 知道做什么不做什么 | [产品边界](docs/00-product-spec/04-scope-boundary.md) ✅ |
 | 5 分钟装起来 + 第一次用 | [快速上手](docs/01-getting-started/01-quickstart.md) ✅ |
+| **理解决策学习协议**（v1.0.21+） | [决策学习指南](docs/02-skill-reference/00-decision-learning-guide.md) ✅ |
+| **看 5 个核心 skill 怎么用** | [skill 参考手册](docs/02-skill-reference/) ✅ |
+| ↳ /harness-req 主入口 | [01-harness-req.md](docs/02-skill-reference/01-harness-req.md) ✅ |
+| ↳ /harness-design 设计阶段 | [02-harness-design.md](docs/02-skill-reference/02-harness-design.md) ✅ |
+| ↳ /harness-impact 影响面分析 | [03-harness-impact.md](docs/02-skill-reference/03-harness-impact.md) ✅ |
+| ↳ /harness-test-ci 全量测试 | [04-harness-test-ci.md](docs/02-skill-reference/04-harness-test-ci.md) ✅ |
+| ↳ /harness-review 一致性审计 | [05-harness-review.md](docs/02-skill-reference/05-harness-review.md) ✅ |
 | 路径 A/B/C 怎么选 | 📝 待补（v1.1） |
-| 5 个 skill 详细用法 | 📝 待补（v1.1） · 暂时直接读 `.claude/skills/*/SKILL.md` |
 | 升级 / 卸载 | 直接跑 `scripts/upgrade.sh` 或 `scripts/uninstall.sh` |
 | 看历史变更 | [CHANGELOG.md](CHANGELOG.md) ✅ |
 
-> 📝 待补：路径选择手册 / skill 参考 / 工作流总览 / 速查表 / 升级指南。
-> 写作策略：等 stock_make_money 等真实项目实战暴露具体痛点后再写，避免凭想象产出无效文档。
+> 📝 待补：路径选择手册 / 工作流总览 / 速查表 / 升级指南。
+> 写作策略：等真实项目实战暴露具体痛点后再写，避免凭想象产出无效文档。
 
 ---
 

@@ -578,9 +578,10 @@ print_next_steps() {
     echo "  4. 试跑第一个需求"
     log_info "     > /harness-req 我要做一个测试需求"
     echo ""
-    echo "  🆘 遇到问题："
-    log_info "     卸载：$HARNESS_LITE_ROOT/scripts/uninstall.sh"
-    log_info "     验证：$HARNESS_LITE_ROOT/scripts/validate.sh"
+    echo "  🛠️  常用工具："
+    log_info "     重新自检：$HARNESS_LITE_ROOT/scripts/validate.sh"
+    log_info "     升级版本：$HARNESS_LITE_ROOT/scripts/upgrade.sh"
+    log_info "     完全卸载：$HARNESS_LITE_ROOT/scripts/uninstall.sh"
     echo ""
 
     if [ "${INSTALL_HAD_BACKUP:-0}" = "1" ]; then

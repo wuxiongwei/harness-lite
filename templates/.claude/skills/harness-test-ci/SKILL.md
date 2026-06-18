@@ -157,6 +157,28 @@ grep -rn "import.*UserService\|from.*UserService" --include="*.py" src/
 
 ---
 
+## Phase 4.7：协同视角段（v1.0.23+ · principles §14）
+
+测试报告末尾追加：
+
+```markdown
+---
+
+## 🔍 协同视角（v1.0.23+）
+
+### 📝 PM 视角（用户场景覆盖）
+- 失败用例是否对应 01-需求.md 的某个 AC？
+- 测试覆盖率是否对应需求"不做的范围"之外的所有用户故事？
+
+### 🛠️ RD 视角（实现假设）
+- 失败用例是否暴露设计阶段的实现假设错误？
+- 是否需要回到 02-设计.md 修订？
+```
+
+**质量约束**：每视角 ≥ 2 条、具体可执行、无空话。
+
+---
+
 ## Phase 5：测试报告生成
 
 输出位置：`docs/versions/active/v{X.Y}-{slug}/test-ci-report.md`

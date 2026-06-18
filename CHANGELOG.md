@@ -19,6 +19,93 @@
 
 ---
 
+## [1.0.23] - 2026-06-18
+
+### Added (Standard 协同机制 · principles §14 多人协同协议)
+
+> **不 push GitHub**（用户指定，本地 commit 保留）
+
+#### Layer 1 协议层
+- **`templates/.claude/rules/principles.md` 新增 §14 多人协同协议**（+67 行）
+  - §14.1 三类协同问题与对策（并行不冲突 / 责任不重复 / 角色协同）
+  - §14.2 关键文件（`branch-strategy.md` + `assignments/<人>.md`，**入仓库**）
+  - §14.3 软约束原则（不动 git hook）
+  - §14.4 检查触发点（commit/push 前 + harness-req 创建版本前 + harness-impact 中）
+  - §14.5 协同视角原则（≥2 条具体可执行）
+  - §14.6 与 §13 / 铁律优先级（铁律 > §13 > §14）
+  - §14.7 文件不存在 = v1.0.22 行为
+  - 自检清单从 11 条扩到 12 条
+
+#### Layer 2 数据层（团队共享，**入仓库**）
+- **`templates/.claude/branch-strategy.md` 新增**（+59 行）：通用模板 + 命名规范 + 主分支保护 + 合并规则 + 示例 + 团队自定义占位
+- **`templates/.claude/assignments/.gitkeep`** + **`templates/.claude/assignments/README.md`**（+94 行）：任务认领板说明 + AI 行为约定 + 多 owner 协作
+
+#### Layer 3 流程层
+- **4 skill body 接入协同视角段**（+123 行总计）：
+  - `harness-req`：Phase 5.7 + A2 任务冲突预警（claim 冲突时 [1]协作 [2]改名 [3]取消）
+  - `harness-design`：Phase 4.7（PM + QA 视角）
+  - `harness-impact`：Phase 3.7 + A3 文件冲突预警（与 assignments 交叉）
+  - `harness-test-ci`：Phase 4.7（PM + RD 视角）
+
+#### .gitignore（+5 行注释）
+- 与 v1.0.21 决策学习对比：v1.0.23 文件**入仓库**（团队共享）
+
+### Changed
+- **`scripts/init.sh` UX 修复**："🆘 遇到问题：" → "🛠️ 常用工具："
+  - 旧文案 SOS 表情让用户误以为安装失败
+  - 改为"工具型表情"+ 工具列表，把"事后补救"框架改为"日常工具箱"
+  - 顺手补齐 upgrade.sh 入口（之前漏列）
+
+### 价值
+
+**Standard 档真正落地**——从 v1.0.0 的"档位营销标签"，到 v1.0.23 的**多人协同基础设施**：
+- 并行不冲突（A1 分支策略 + A2 任务认领 + A3 文件冲突预警）
+- 责任不重复（assignments 多 owner 支持）
+- 角色协同（4 skill 协同视角段）
+
+**协同 ≠ 分工**——不做工业化分工（v1.0.21 v1 已废），做协同基础设施。
+
+### 元发现 M1 · 协议落地 vs 实施层 gap（最重要 · 触发 v1.0.24）
+
+v1.0.21 决策学习协议虽然写入 principles §13，**但本次 v1.0.23 自身的 13 个决策点全部由 AskUserQuestion / AI 自决处理，无一条写入 decision-log.md**。
+
+**根因**：协议规定"AI 遇到决策点 → 询问 + 记 log"，但 AI 在生成 markdown 文档时**没把"和用户讨论方向"识别为决策点**。
+
+**这是协议层产品的核心挑战**：协议存在 ≠ 协议被自动遵循。
+
+**修复方向**（v1.0.24，已加任务）：
+- 加强 principles §13 中"如何识别决策点"的示例
+- SKILL.md 模板约束："调 AskUserQuestion 前 / 后必须 append decision-log"
+
+**沉淀**：协议层产品有 3 层级，缺一不可：
+1. 协议本身（描述）
+2. 实施约束（自动触发场景）
+3. 示例兜底（让 AI 识别具体场景）
+
+### 兼容性
+
+- v1.0.22 升级到 v1.0.23：渐进启用，无 breaking change
+- `branch-strategy.md` 不存在 → 跳过分支检查（同 v1.0.22）
+- `assignments/` 不存在 → 跳过冲突预警（同 v1.0.22）
+- 协同视角段：默认开启（无依赖文件）
+
+### Verified
+
+- 静态审计通过（principles §14 / 5 文件接入 / .gitignore 全 ✅）
+- 8 个矩阵测试推演通过（T1-T8）
+- 4 skill 协同视角内容质量验证（每视角 ≥ 2 条具体提醒，防 R4 流于形式）
+- stock 现场同步并 validate 全绿
+- 风险 R1-R5 全部缓解
+
+### Not done (留 v1.0.24+)
+
+- 修复 M1 协议落地 vs 实施层 gap（v1.0.24 优先）
+- C 类知识协同（共享 wiki / 架构 ADR / 设计评审协作）→ v1.0.24+ 单独大版本
+- 强制 git hook 分支校验 → v1.1+
+- 任务依赖图 / 时间线 → v1.2+
+
+---
+
 ## [1.0.22] - 2026-06-18
 
 ### Added (task #9 落地 · pending 12 版本后兑现)

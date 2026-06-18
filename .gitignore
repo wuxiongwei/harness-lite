@@ -30,6 +30,11 @@ backlog/private-*.md
 .claude/decision-log.md
 .claude/auto-decide.md
 
+# v1.0.23 · 多人协同相关（团队共享，**不**忽略）
+# .claude/branch-strategy.md       入仓库（团队约定）
+# .claude/assignments/*.md         入仓库（任务认领板）
+# 与 v1.0.21 个人偏好相反，协同需要团队可见
+
 # 注：.claude 是符号链接到 templates/.claude（dogfooding）
 # 让 git 跟踪符号链接本身（以路径形式存储），不忽略
 # 这样 clone 后符号链接保留，dogfooding 配置同步

@@ -411,6 +411,38 @@ fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# ============================================================
+# Solo-Multi vs Standard 互斥检查（v1.0.29）
+# ============================================================
+echo ""
+echo "📋 Solo-Multi vs Standard 互斥检查（v1.0.29+）："
+
+set +e
+solo_standard_ok=true
+
+if [ -f ".claude/tasks.md" ] && [ -d ".claude/assignments" ]; then
+    echo -e "${RED}✗${NC}  Solo-Multi（.claude/tasks.md）与 Standard（.claude/assignments/）不能共存"
+    echo -e "    ${YELLOW}原因：${NC}两者解决不同问题（单人多任务 vs 多人协同），混用会冲突"
+    echo -e "    ${YELLOW}修复：${NC}选一个：单人用 Solo-Multi，多人用 Standard"
+    solo_standard_ok=false
+    errors=$((errors+1))
+fi
+set -e
+
+if $solo_standard_ok; then
+    if [ -f ".claude/tasks.md" ]; then
+        echo -e "${GREEN}✓${NC}  Solo-Multi 模式（单人多任务）"
+    elif [ -d ".claude/assignments" ]; then
+        echo -e "${GREEN}✓${NC}  Standard 模式（多人协同）"
+    else
+        echo -e "${GREEN}✓${NC}  Lite 模式（默认，无扩展）"
+    fi
+fi
+
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $errors -eq 0 ]; then
     echo -e "${GREEN}✅ 所有检查通过！${NC}"
     echo ""

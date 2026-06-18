@@ -19,6 +19,81 @@
 
 ---
 
+## [1.0.29] - 2026-06-18
+
+### Added · Solo-Multi 单人多任务并行方案（Lite 扩展 · 不 push）
+
+> **用户问**："单人多任务并行适合用 Standard 吗？"
+> **答**：不适合——Standard 是防多人冲突，单人多任务的痛点是**上下文切换 / 进度追踪 / 依赖管理**。
+> **解法**：轻量单文件 `.claude/tasks.md`，AI 切换任务时 read，快速恢复上下文。
+
+#### 方案定位
+
+| 维度 | Lite（默认）| **Solo-Multi（新）** | Standard（多人）|
+|-----|-----------|------------------|---------------|
+| 适用场景 | 单任务顺序做 | **单人 3+ 任务并行** | 2+ 人团队 |
+| 核心文件 | 无 | `.claude/tasks.md` | branch-strategy + assignments |
+| 解决痛点 | - | 上下文切换 / 进度追踪 / 依赖管理 | 多人冲突 |
+| 复杂度 | 最低 | 🟡 低（1 文件）| 🟠 中（2+ 文件）|
+
+#### 新增内容
+
+**1. templates/.claude/tasks.md 模板**（+150 行）：
+- DOING（≤ 3 个）：当前进行中任务
+- TODO（按优先级）：待开始任务
+- DONE（最近 5 个）：已完成任务
+- 每个任务记录：状态 / 分支 / 影响文件 / 下一步 / 阻塞 / 最后更新
+
+**2. principles §15 单人多任务并行协议**（+60 行）：
+- §15.1 核心原则（单文件追踪板）
+- §15.2 AI 行为约定：
+  - 15.2.1 任务切换时（必读）
+  - 15.2.2 任务状态变化时（必更新）
+  - 15.2.3 任务完成时（必迁移）
+- §15.3 与 Standard 的互斥关系（禁止共存）
+- §15.4 文件不存在 = Lite 行为
+
+**3. docs/04-solo-multi-guide/01-solo-multi.md 用户文档**（+400 行）：
+- 什么是 Solo-Multi（适用场景 / 与 Standard 对比）
+- 5 分钟启用（模板 + 填写任务 + 第一次切换）
+- 使用习惯（每天开始前 / 任务切换 / 发现阻塞 / 任务完成）
+- DOING 段数量建议（1-2 个最佳，≥ 4 个不推荐）
+- 常见问题（与 Standard 互斥 / 是否入仓库 / AI 自动更新）
+- 真实示例（完整 tasks.md）
+
+**4. validate.sh Solo-Multi vs Standard 互斥检查**（+20 行）：
+- 检测 `.claude/tasks.md` 与 `.claude/assignments/` 不能共存
+- 报告当前模式：Solo-Multi / Standard / Lite
+
+**5. README 文档导航更新**：
+- 加 Solo-Multi 指南入口
+
+#### 验证
+
+- ✅ templates/tasks.md 模板齐全
+- ✅ principles §15 协议完备
+- ✅ Solo-Multi 文档（+400 行）
+- ✅ validate 互斥检查（Solo-Multi / Standard / Lite 三模式识别）
+- ✅ stock 同步（templates + principles + docs + validate）
+
+#### 产品级沉淀
+
+| 场景 | 用哪个模式 | 核心文件 |
+|-----|----------|---------|
+| 单人单任务 | **Lite**（默认）| 无 |
+| **单人多任务并行** | **Solo-Multi**（v1.0.29 新增）| `.claude/tasks.md` |
+| 2+ 人团队 | **Standard**（v1.0.23+）| branch-strategy + assignments |
+
+**H-L 现已覆盖 3 种典型场景**——单人 / 单人多任务 / 多人团队。
+
+### Not done
+
+- 不加 AI 自动识别"当前在做哪个任务"（用户切换时明确说）
+- 不加可视化看板（tasks.md 是纯文本，轻量优先）
+- 不改 Standard（Standard 保持原样，Solo-Multi 是独立扩展）
+
+---
+
 ## [1.0.28] - 2026-06-18
 
 ### Added · Standard 生产级补全（文档 + 边界场景 · 不 push）

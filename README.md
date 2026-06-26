@@ -2,7 +2,11 @@
 
 > **小团队的AI协作工程化框架** · 让2-5人小团队也能享受工程化红利
 
-[![Version](https://img.shields.io/badge/version-1.0.20-blue)]() [![License](https://img.shields.io/badge/license-MIT-green)]() [![Status](https://img.shields.io/badge/status-open--source-brightgreen)]()
+[![Version](https://img.shields.io/badge/version-1.0.31-blue)]() [![License](https://img.shields.io/badge/license-MIT-green)]() [![Status](https://img.shields.io/badge/status-open--source-brightgreen)]()
+
+---
+
+> 🌏 **English visitors**: Harness-Lite is a lightweight engineering framework that makes AI-assisted coding reliable for 2-5 person teams. It enforces context loading, multi-agent isolation, path-based workflows, and layered verification — turning ad-hoc "vibe coding" into a repeatable process. **Docs are Chinese-only for now** — the methodology is rooted in a Chinese-language source (《AI 编程时代的软件工程》) and our early users are Chinese teams. International docs may come once the product stabilizes.
 
 ---
 
@@ -137,12 +141,14 @@ harness-lite/
 | 知道做什么不做什么 | [产品边界](docs/00-product-spec/04-scope-boundary.md) ✅ |
 | 5 分钟装起来 + 第一次用 | [快速上手](docs/01-getting-started/01-quickstart.md) ✅ |
 | **理解决策学习协议**（v1.0.21+） | [决策学习指南](docs/02-skill-reference/00-decision-learning-guide.md) ✅ |
-| **看 5 个核心 skill 怎么用** | [skill 参考手册](docs/02-skill-reference/) ✅ |
+| **看 7 个核心 skill 怎么用** | [skill 参考手册](docs/02-skill-reference/) ✅ |
 | ↳ /harness-req 主入口 | [01-harness-req.md](docs/02-skill-reference/01-harness-req.md) ✅ |
 | ↳ /harness-design 设计阶段 | [02-harness-design.md](docs/02-skill-reference/02-harness-design.md) ✅ |
 | ↳ /harness-impact 影响面分析 | [03-harness-impact.md](docs/02-skill-reference/03-harness-impact.md) ✅ |
 | ↳ /harness-test-ci 全量测试 | [04-harness-test-ci.md](docs/02-skill-reference/04-harness-test-ci.md) ✅ |
 | ↳ /harness-review 一致性审计 | [05-harness-review.md](docs/02-skill-reference/05-harness-review.md) ✅ |
+| ↳ /harness-prototype 原型生成（v1.0.31+） | [SKILL.md](templates/.claude/skills/harness-prototype/SKILL.md) ✅ |
+| ↳ /harness-research 多 Agent 调研（v1.0.31+） | [SKILL.md](templates/.claude/skills/harness-research/SKILL.md) ✅ |
 | 路径 A/B/C 怎么选 | 📝 待补（v1.1） |
 | 升级 / 卸载 | 直接跑 `scripts/upgrade.sh` 或 `scripts/uninstall.sh` |
 | 看历史变更 | [CHANGELOG.md](CHANGELOG.md) ✅ |

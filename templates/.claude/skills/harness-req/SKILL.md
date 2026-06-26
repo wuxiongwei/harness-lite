@@ -59,6 +59,7 @@ description: |
 ### 路径 A 执行（完整需求 5 阶段）
 
 ```
+0. （可选）需求很模糊或要做竞品/技术背景调查时 → 先 /harness-research 收集信息
 1. 创建版本目录：docs/versions/active/v{X.Y}-{slug}/
 2. 复制模板：cp .claude/templates/path-a/01-需求.md ./
 3. 委托 doc-generator subagent 填充 01-需求.md（黑盒视角）
@@ -69,7 +70,14 @@ description: |
    - "不做的范围是否明确?"
 6. 等待"人介入1：方案确认"
 7. ✅ 通过后 → 进入 /harness-design
+   → 设计通过后（可选）/harness-prototype 生成可交互原型，技术投入前验证方向
 ```
+
+> **两个可选增强 skill（路径A 专用，从 ccflow 提取）**：
+> - `/harness-research`：需求前的多 Agent 并行调研（竞品/技术选型/市场背景）
+> - `/harness-prototype`：设计后的可交互 HTML 原型（编码前验证产品方向）
+>
+> 两者都是**可选**环节——小需求/明确需求不必用，需要降低不确定性时才触发。
 
 ### 路径 B 执行（小需求 2 阶段）
 
@@ -366,9 +374,13 @@ skill 行动：
 ## 与其他 skill 的协作
 
 ```
+（可选）/harness-research → 调研背景信息（research/summary.md）
+   ↓
 /harness-req → 完成01产物
    ↓
 /harness-design → 完成02产物（路径A/C走）
+   ↓
+（可选）/harness-prototype → 可交互原型，编码前验证方向
    ↓
 [implementer subagent] → 编码 + 03产物
    ↓
@@ -376,6 +388,8 @@ skill 行动：
    ↓
 [validator subagent] → 完成04产物
 ```
+
+> 带"（可选）"的两个 skill 是路径A 增强环节，按需触发，不是必经步骤。
 
 ---
 

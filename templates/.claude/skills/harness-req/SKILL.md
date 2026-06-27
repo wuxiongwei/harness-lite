@@ -70,14 +70,12 @@ description: |
    - "不做的范围是否明确?"
 6. 等待"人介入1：方案确认"
 7. ✅ 通过后 → 进入 /harness-design
-   → 设计通过后（可选）/harness-prototype 生成可交互原型，技术投入前验证方向
+   → 设计通过后 **默认进入 /harness-prototype** 生成可交互原型，技术投入前验证方向（除非用户明确"跳过原型"）
 ```
 
-> **两个可选增强 skill（路径A 专用，从 ccflow 提取）**：
-> - `/harness-research`：需求前的多 Agent 并行调研（竞品/技术选型/市场背景）
-> - `/harness-prototype`：设计后的可交互 HTML 原型（编码前验证产品方向）
->
-> 两者都是**可选**环节——小需求/明确需求不必用，需要降低不确定性时才触发。
+> **两个路径A 专用增强 skill（从 ccflow 提取）**：
+> - `/harness-research`（**可选**）：需求前的多 Agent 并行调研（竞品/技术选型/市场背景）。小需求/明确需求不必用，需要降低不确定性时才触发。
+> - `/harness-prototype`（**默认必须**，v1.0.32+）：设计后的可交互 HTML 原型（编码前验证产品方向）。/harness-design 通过后默认进入，用户可显式"跳过原型"。仅纯后端 API / 改动极小 / 已有明确原型时才跳过。
 
 ### 路径 B 执行（小需求 2 阶段）
 
@@ -380,7 +378,7 @@ skill 行动：
    ↓
 /harness-design → 完成02产物（路径A/C走）
    ↓
-（可选）/harness-prototype → 可交互原型，编码前验证方向
+/harness-prototype → **默认必须**，可交互原型，编码前验证方向（除非用户明确"跳过原型"）
    ↓
 [implementer subagent] → 编码 + 03产物
    ↓
@@ -389,7 +387,7 @@ skill 行动：
 [validator subagent] → 完成04产物
 ```
 
-> 带"（可选）"的两个 skill 是路径A 增强环节，按需触发，不是必经步骤。
+> `/harness-research` 是可选增强环节（按需触发）。`/harness-prototype` 自 v1.0.32 起为默认必须，仅纯后端 API / 改动极小 / 已有明确原型时可显式跳过。
 
 ---
 

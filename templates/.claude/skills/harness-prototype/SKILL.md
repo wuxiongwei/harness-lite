@@ -196,9 +196,9 @@ subagent 完成后，主 skill 追问（对齐 harness-design 的反向校验风
 
 ---
 
-## Phase 5：自检（软验证 · 替代 ccflow 的 validator.py）
+## Phase 5：自检 + 截图回读（硬门禁 · principles §16）
 
-不跑 Python 验证器，主 skill 用检查清单 + 实际打开确认：
+不跑 Python 验证器，但**截图回读是硬门禁**——这是 §16 交付前自测铁律对页面类产物的标准动作。
 
 ```
 [ ] 1. HTML 文件存在且 ≥ 300 行（Bash: wc -l）
@@ -207,38 +207,59 @@ subagent 完成后，主 skill 追问（对齐 harness-design 的反向校验风
 [ ] 4. 覆盖 3-5 个核心页面，页面间可切换
 [ ] 5. 每页有示例数据，无 TODO 空白页
 [ ] 6. prototype-spec.md 存在且含 5 个规格章节
-[ ] 7. 浏览器实际打开确认可渲染、可交互（见下方验证方法）
+[ ] 7. 🔴 截图回读通过（见下方 · 不做 = 没自测 = 不可交付）
 ```
 
-### 实际打开验证（必做，不要只看代码就声称可用）
+### 截图回读（必做硬门禁 · 替代旧的"open 一下就声称可用"）
+
+> ⚠️ **v1.0.33 强约束**：v1.0.31-32 翻车根因——AI 跑 `open xxx.html` 拿到 exit 0
+> 却看不到渲染画面，脑补"应该没问题"就交付，用户一上手第一个就崩。
+> 现在**必须截图 + Read 回读，AI 真的看到渲染结果**才算自测过。
 
 ```bash
-# macOS 直接用默认浏览器打开
-open docs/versions/active/v{X}-{slug}/prototype/prototype.html
-
-# 或：检查 HTML 结构完整性（无需浏览器环境时的兜底）
-grep -c 'x-show' prototype.html        # 页面数应 ≥ 3
-grep -c '@click' prototype.html        # 交互点应 ≥ 3
-grep -c 'cdn' prototype.html           # CDN 引用应 = 2
+# 1. headless Chrome 渲染并截图（路径按平台探测）
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+[ -x "$CHROME" ] || CHROME="$(command -v google-chrome || command -v chromium || command -v chrome)"
+PROTO="docs/versions/active/v{X}-{slug}/prototype/prototype.html"
+"$CHROME" --headless --disable-gpu --no-sandbox --hide-scrollbars \
+  --screenshot="/tmp/proto-selftest.png" --window-size=1440,900 \
+  "file://$(pwd)/$PROTO"
+ls -la /tmp/proto-selftest.png   # 确认截图生成
 ```
 
-> ⚠️ 验证纪律：**实际打开看到界面渲染、点击能切换页面**，才算通过。
-> 只读代码"看起来对"不算验证 —— 这是 harness-lite 的铁律（principles：阻塞即停止）。
-> 若环境无浏览器，至少用上面的 grep 确认结构完整，并明确告诉用户"未在浏览器实测"。
+```
+# 2. 用 Read 工具读 /tmp/proto-selftest.png —— 真的看渲染结果
+# 3. 判读（对照 02-设计/01-需求 的核心功能）：
+#    - 页面渲染出来了吗？还是白板？
+#    - 关键元素在吗（标题栏 / 导航 / 核心内容区）？
+#    - 布局崩没崩？文字溢出 / 元素重叠？
+#    - 示例数据显示了吗？
+# 4. 有问题 → 委托 implementer 修 → 回到第 1 步重新截图，直到画面干净
+# 5. （可选增强）切到第 2/3 个页面再各截一张，确认导航后页面也正常
+#    —— 改 HTML 里 x-data 初始 page 值或用 Playwright，按需
+```
+
+⚠️ **截图能挡"第一眼就崩"（白板 / JS 报错 / 布局烂），挡不住"点到第三步才崩"的深层交互。**
+若需覆盖交互链路，升级 Playwright（模拟点击 + 抓 console error）。当前默认档：截图回读首屏 + 可选多页截图。
+
+> grep 兜底（无浏览器环境时）：`grep -c 'x-show'`（≥3）/ `grep -c '@click'`（≥3）/ `grep -c 'cdn'`（=2）。
+> 但 grep 只验结构存在、**不验渲染**——能用截图就别只 grep，并明确告诉用户"未做截图回读"。
 
 ---
 
 ## Phase 6：流转建议
 
 ```
-✅ 自检全过 + 浏览器确认可交互：
-   → 提示用户："原型已就绪，请打开 prototype.html 验证产品方向"
+✅ 自检全过 + 截图回读确认渲染正常（§16 硬门禁）：
+   → 提示用户："原型已就绪，我已截图自测确认渲染正常，请打开 prototype.html 验证产品方向"
+   → （建议把自测截图一并给用户看，眼见为实）
    → 用户确认方向 OK → 回到编码（/harness-design 已完成则进 implementer）
-   → 用户看完要调整 → 局部修订原型（不重写整个文件）
+   → 用户看完要调整 → 局部修订原型（不重写整个文件）→ 改完重新截图回读
    → 用户看完发现方向错了 → 回到 /harness-req 或 /harness-design 重审
 
-⚠️ 自检发现空白页 / 交互缺失：
-   → 委托 implementer 补全，重新自检
+🔴 截图回读发现白板 / 渲染崩 / 空白页 / 交互缺失：
+   → 这是阻塞（§16 + §7）→ 委托 implementer 修 → 重新截图回读
+   → 修好前**不允许**提示用户"已就绪"
 
 🔴 反复修订 > 3 轮：
    → 可能是需求/设计本身不清晰
@@ -278,8 +299,8 @@ skill 行动：
   2. 创建 prototype/ 目录
   3. 委托 implementer 生成 prototype.html + prototype-spec.md
   4. 反向校验（覆盖度 / 越界 / 空白页 / 假设）
-  5. 自检 + open 浏览器实测可交互
-  6. 提示用户：原型已就绪，打开验证产品方向
+  5. 自检 + 截图回读（headless 截图 → Read 看渲染 → 有问题修了重截）
+  6. 提示用户：原型已就绪（附自测截图），打开验证产品方向
 ```
 
 ---

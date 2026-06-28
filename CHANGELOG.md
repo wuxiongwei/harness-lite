@@ -33,6 +33,26 @@
 
 **服务的核心原则**：原则一（固化人的优秀动作）——调研的核心方法论（分维度并行 + 验证不偷懒）保留，但维度推荐从"固定模板"改为"动态适配用户主题"。
 
+### Added · 验收用例体系
+
+**来源**：用户反馈——每次修改后不知道是否有问题，需要一套验收机制。
+
+**核心设计**：
+- 产品核心目标 → 验收用例映射
+- 分层验证：静态（每次push自动）+ 行为（大改动后）+ 真闭环（发布前）
+- 验收用例覆盖：安装/AI质量/产物链路/调研/安全 5类
+
+**产出文件**：
+- `docs/acceptance-cases/README.md`：用例索引 + 分层验证策略 + 发布检查清单
+- `docs/acceptance-cases/UC1-install.md`：安装类验收用例
+- `docs/acceptance-cases/UC2-ai-quality.md`：AI质量类验收用例
+- `docs/acceptance-cases/UC3-product-chain.md`：产物链路类验收用例（真闭环）
+- `docs/acceptance-cases/UC4-research.md`：调研类验收用例
+- `docs/acceptance-cases/UC5-safety.md`：安全类验收用例
+- `docs/acceptance-cases/scripts/validate-static.sh`：静态验证脚本（自动跑）
+
+**服务的核心原则**：原则一（固化人的优秀动作）——把"发布前检查"的资深工程师动作录下来重放。
+
 ---
 
 ## [Unreleased]
